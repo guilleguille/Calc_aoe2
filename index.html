@@ -9,7 +9,7 @@
 <style>
 :root{
   --bg:#080d13;
-  --panel:#101923;
+  --panel:#111a25;
   --line:#29394d;
   --text:#f4f1e8;
   --muted:#9daabd;
@@ -24,7 +24,8 @@ body{
   margin:0;
   color:var(--text);
   font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:radial-gradient(circle at 50% -20%,#223247 0,#0b121b 36%,#070b10 100%);
+  background:
+    radial-gradient(circle at 50% -15%,#223247 0,#0b121b 36%,#070b10 100%);
 }
 
 button,select,input{font:inherit}
@@ -58,6 +59,7 @@ header{
 h1{
   margin:0;
   font-size:21px;
+  line-height:1.1;
 }
 
 .subtitle{
@@ -67,7 +69,7 @@ h1{
 }
 
 .card{
-  background:linear-gradient(180deg,#131d29,#0e1720);
+  background:linear-gradient(180deg,#131e2a,#0e1720);
   border:1px solid var(--line);
   border-radius:17px;
   padding:12px;
@@ -143,9 +145,9 @@ input[type="search"]{
 }
 
 .smallbtn{
+  border:1px solid var(--line);
   background:#0b131c;
   color:white;
-  border:1px solid var(--line);
   border-radius:10px;
   padding:0 12px;
 }
@@ -158,7 +160,9 @@ input[type="search"]{
   margin:8px 0;
 }
 
-.tabs::-webkit-scrollbar{display:none}
+.tabs::-webkit-scrollbar{
+  display:none;
+}
 
 .tab,.chip{
   border:1px solid var(--line);
@@ -290,6 +294,7 @@ details{
 summary{
   color:#d7e0e9;
   font-size:10px;
+  cursor:pointer;
 }
 
 .advanced{
@@ -357,7 +362,6 @@ summary{
 }
 
 @media(max-width:490px){
-
   .grid{
     grid-template-columns:1fr;
   }
@@ -388,336 +392,252 @@ summary{
 <main class="app">
 
 <header>
-<div class="brand">
-
-<div class="logo">⚔</div>
-
-<div>
-<h1>AoE2 DE · Calculadora de economía</h1>
-<div class="subtitle">
-Aldeanos necesarios para mantener producción militar continua.
-</div>
-</div>
-
-</div>
+  <div class="brand">
+    <div class="logo">⚔</div>
+    <div>
+      <h1>AoE2 DE · Calculadora de economía</h1>
+      <div class="subtitle">
+        Aldeanos necesarios para mantener producción militar continua.
+      </div>
+    </div>
+  </div>
 </header>
-
 
 <section class="card">
 
-<div class="sectionhead">
+  <div class="sectionhead">
+    <strong>Configuración</strong>
 
-<strong>Configuración</strong>
+    <div class="status">
+      <span id="statusDot" class="dot"></span>
+      <span id="statusText">Cargando datos…</span>
+    </div>
+  </div>
 
-<div class="status">
-<span id="statusDot" class="dot"></span>
-<span id="statusText">Cargando datos…</span>
-</div>
+  <div class="grid">
 
-</div>
+    <div class="field">
+      <label>Civilización</label>
+      <select id="civ">
+        <option>Cargando…</option>
+      </select>
+    </div>
 
+    <div class="field">
+      <label>Fuente de comida</label>
 
-<div class="grid">
+      <select id="foodSource">
+        <option value="farm">🌾 Granjas</option>
+        <option value="sheep">🐑 Ovejas</option>
+        <option value="boar">🐗 Jabalí / ciervo</option>
+        <option value="berries">🫐 Bayas</option>
+        <option value="fish">🐟 Pesca</option>
+      </select>
+    </div>
 
-<div class="field">
+  </div>
 
-<label>Civilización</label>
+  <details>
 
-<select id="civ">
-<option>Cargando…</option>
-</select>
+    <summary>Mejoras económicas y ajustes avanzados</summary>
 
-</div>
+    <div class="advanced">
 
+      <div class="upgrades" id="upgrades">
 
-<div class="field">
+        <button class="chip" data-up="wheelbarrow">
+          Carretilla
+        </button>
 
-<label>Fuente de comida</label>
+        <button class="chip" data-up="handcart">
+          Carro de mano
+        </button>
 
-<select id="foodSource">
+        <button class="chip" data-up="wood1">
+          Hacha doble filo
+        </button>
 
-<option value="farm">🌾 Granjas</option>
-<option value="sheep">🐑 Ovejas</option>
-<option value="boar">🐗 Jabalí / ciervo</option>
-<option value="berries">🫐 Bayas</option>
-<option value="fish">🐟 Pesca</option>
+        <button class="chip" data-up="wood2">
+          Sierra de arco
+        </button>
 
-</select>
+        <button class="chip" data-up="wood3">
+          Sierra dos manos
+        </button>
 
-</div>
+        <button class="chip" data-up="gold1">
+          Minería de oro
+        </button>
 
-</div>
+        <button class="chip" data-up="gold2">
+          Pozo de oro
+        </button>
 
+        <button class="chip" data-up="stone1">
+          Minería de piedra
+        </button>
 
-<details>
+        <button class="chip" data-up="stone2">
+          Pozo de piedra
+        </button>
 
-<summary>Mejoras económicas y ajustes avanzados</summary>
+      </div>
 
-<div class="advanced">
+      <div style="height:9px"></div>
 
-<div class="upgrades" id="upgrades">
+      <div class="grid">
 
-<button class="chip" data-up="wheelbarrow">Carretilla</button>
+        <div class="field">
+          <label>Multiplicador comida</label>
+          <input id="foodMult" type="number" step=".01" value="1">
+        </div>
 
-<button class="chip" data-up="handcart">Carro de mano</button>
+        <div class="field">
+          <label>Multiplicador madera</label>
+          <input id="woodMult" type="number" step=".01" value="1">
+        </div>
 
-<button class="chip" data-up="wood1">Hacha doble filo</button>
+        <div class="field">
+          <label>Multiplicador oro</label>
+          <input id="goldMult" type="number" step=".01" value="1">
+        </div>
 
-<button class="chip" data-up="wood2">Sierra de arco</button>
+        <div class="field">
+          <label>Multiplicador piedra</label>
+          <input id="stoneMult" type="number" step=".01" value="1">
+        </div>
 
-<button class="chip" data-up="wood3">Sierra dos manos</button>
+        <div class="field">
+          <label>Velocidad producción</label>
+          <input id="trainMult" type="number" step=".01" value="1">
+        </div>
 
-<button class="chip" data-up="gold1">Minería de oro</button>
+        <div class="field">
+          <label>Eficiencia práctica</label>
+          <input id="efficiency" type="number" min=".5" max="1" step=".01" value=".95">
+        </div>
 
-<button class="chip" data-up="gold2">Pozo de oro</button>
+      </div>
 
-<button class="chip" data-up="stone1">Minería de piedra</button>
+    </div>
 
-<button class="chip" data-up="stone2">Pozo de piedra</button>
-
-</div>
-
-
-<div style="height:9px"></div>
-
-
-<div class="grid">
-
-<div class="field">
-<label>Multiplicador comida</label>
-<input id="foodMult" type="number" step=".01" value="1">
-</div>
-
-<div class="field">
-<label>Multiplicador madera</label>
-<input id="woodMult" type="number" step=".01" value="1">
-</div>
-
-<div class="field">
-<label>Multiplicador oro</label>
-<input id="goldMult" type="number" step=".01" value="1">
-</div>
-
-<div class="field">
-<label>Multiplicador piedra</label>
-<input id="stoneMult" type="number" step=".01" value="1">
-</div>
-
-<div class="field">
-<label>Velocidad producción</label>
-<input id="trainMult" type="number" step=".01" value="1">
-</div>
-
-<div class="field">
-<label>Eficiencia práctica</label>
-<input id="efficiency" type="number" min=".5" max="1" step=".01" value=".95">
-</div>
-
-</div>
-
-</div>
-
-</details>
+  </details>
 
 </section>
 
+<section class="card">
+
+  <div class="sectionhead">
+    <strong>Unidades disponibles</strong>
+    <span class="micro" id="unitCount">—</span>
+  </div>
+
+  <div class="toolbar">
+
+    <input
+      id="search"
+      type="search"
+      placeholder="Buscar unidad…"
+    >
+
+    <button class="smallbtn" id="clearBtn">
+      Limpiar
+    </button>
+
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div id="units" class="unitgrid">
+
+    <div class="loading">
+      Descargando datos…
+    </div>
+
+  </div>
+
+</section>
 
 <section class="card">
 
-<div class="sectionhead">
+  <strong>Cómo funciona</strong>
 
-<strong>Unidades disponibles</strong>
-
-<span class="micro" id="unitCount">—</span>
-
-</div>
-
-
-<div class="toolbar">
-
-<input
-id="search"
-type="search"
-placeholder="Buscar unidad…"
->
-
-<button
-class="smallbtn"
-id="clearBtn"
->
-Limpiar
-</button>
-
-</div>
-
-
-<div
-class="tabs"
-id="tabs"
-></div>
-
-
-<div
-class="unitgrid"
-id="units"
->
-
-<div class="loading">
-Descargando datos…
-</div>
-
-</div>
+  <div class="note">
+    Cada toque en + añade una línea de producción continua.
+    Por ejemplo, Caballero ×2 significa dos establos produciendo
+    caballeros sin parar.
+  </div>
 
 </section>
 
 </main>
 
-
 <div class="result">
 
-<div class="resources">
+  <div class="resources">
 
-<div class="resource">
-<b id="outFood">0.0</b>
-<span>🍖 COMIDA</span>
-</div>
+    <div class="resource">
+      <b id="outFood">0.0</b>
+      <span>🍖 COMIDA</span>
+    </div>
 
-<div class="resource">
-<b id="outWood">0.0</b>
-<span>🪵 MADERA</span>
-</div>
+    <div class="resource">
+      <b id="outWood">0.0</b>
+      <span>🪵 MADERA</span>
+    </div>
 
-<div class="resource">
-<b id="outGold">0.0</b>
-<span>🪙 ORO</span>
-</div>
+    <div class="resource">
+      <b id="outGold">0.0</b>
+      <span>🪙 ORO</span>
+    </div>
 
-<div class="resource">
-<b id="outStone">0.0</b>
-<span>🪨 PIEDRA</span>
-</div>
+    <div class="resource">
+      <b id="outStone">0.0</b>
+      <span>🪨 PIEDRA</span>
+    </div>
 
-</div>
+  </div>
 
-
-<div
-class="summary"
-id="summary"
->
-Selecciona una unidad para empezar.
-</div>
+  <div id="summary" class="summary">
+    Selecciona una unidad para empezar.
+  </div>
 
 </div>
-
 
 <script>
 
-/*
-=============================================================
-DATOS
-=============================================================
-*/
+/* =========================================================
+   FUENTES
+========================================================= */
 
-const DATA_SOURCES = [
+const DATA_URL =
+'https://cdn.jsdelivr.net/gh/SiegeEngineers/aoe2techtree@master/data/data.json';
 
-'https://cdn.jsdelivr.net/gh/SiegeEngineers/aoe2techtree@master/data/data.json',
+const IMG_BASE =
+'https://cdn.jsdelivr.net/gh/SiegeEngineers/aoe2techtree@master/img/Unit/';
 
-'https://raw.githubusercontent.com/SiegeEngineers/aoe2techtree/master/data/data.json'
-
-];
-
-
-/*
-=============================================================
-IMÁGENES
-
-Probamos tres fuentes automáticamente.
-=============================================================
-*/
-
-function imageSources(id){
-
-return [
-
-`https://cdn.jsdelivr.net/gh/SiegeEngineers/aoe2techtree@master/img/Unit/${id}.png`,
-
-`https://raw.githubusercontent.com/SiegeEngineers/aoe2techtree/master/img/Unit/${id}.png`,
-
-`https://github.com/SiegeEngineers/aoe2techtree/raw/refs/heads/master/img/Unit/${id}.png`
-
-];
-
-}
+const IMG_FALLBACK =
+'https://raw.githubusercontent.com/SiegeEngineers/aoe2techtree/master/img/Unit/';
 
 
-function nextImage(img,id){
-
-let index =
-Number(
-img.dataset.source || 0
-);
-
-index++;
-
-const sources =
-imageSources(id);
-
-
-if(
-index <
-sources.length
-){
-
-img.dataset.source =
-index;
-
-img.src =
-sources[index];
-
-}else{
-
-img.style.display =
-'none';
-
-img.parentElement.textContent =
-'⚔️';
-
-}
-
-}
-
-
-/*
-=============================================================
-ESTADO
-=============================================================
-*/
+/* =========================================================
+   ESTADO
+========================================================= */
 
 const $ =
-id =>
-document.getElementById(id);
-
+id => document.getElementById(id);
 
 let raw = null;
-
 let units = [];
-
 let civs = {};
-
 let selected = {};
-
-let filter =
-'Todas';
-
-let activeUpgrades =
-new Set();
+let filter = 'Todas';
+let activeUpgrades = new Set();
 
 
-/*
-=============================================================
-TRADUCCIONES
-=============================================================
-*/
+/* =========================================================
+   TRADUCCIONES
+========================================================= */
 
 const esCivs = {
 
@@ -772,1441 +692,1261 @@ Vikings:'Vikingos'
 const nameES = {
 
 Militia:'Milicia',
-
-'Man-at-Arms':
-'Hombre de armas',
-
-'Long Swordsman':
-'Espadachín de espada larga',
-
-'Two-Handed Swordsman':
-'Espadachín a dos manos',
-
+'Man-at-Arms':'Hombre de armas',
+'Long Swordsman':'Espadachín de espada larga',
+'Two-Handed Swordsman':'Espadachín a dos manos',
 Champion:'Campeón',
 
 Spearman:'Lancero',
-
 Pikeman:'Piquero',
-
 Halberdier:'Alabardero',
 
 Archer:'Arquero',
-
 Crossbowman:'Ballestero',
-
 Arbalester:'Arbalestero',
 
 Skirmisher:'Hostigador',
+'Elite Skirmisher':'Hostigador de élite',
 
-'Elite Skirmisher':
-'Hostigador de élite',
+'Cavalry Archer':'Arquero a caballo',
+'Heavy Cavalry Archer':'Arquero a caballo pesado',
 
-'Cavalry Archer':
-'Arquero a caballo',
-
-'Heavy Cavalry Archer':
-'Arquero a caballo pesado',
-
-'Scout Cavalry':
-'Explorador',
-
-'Light Cavalry':
-'Caballería ligera',
-
+'Scout Cavalry':'Explorador',
+'Light Cavalry':'Caballería ligera',
 Hussar:'Húsar',
 
 Knight:'Caballero',
-
 Cavalier:'Cavalier',
-
 Paladin:'Paladín',
 
-'Camel Rider':
-'Jinete en camello',
-
-'Heavy Camel Rider':
-'Camello pesado',
+'Camel Rider':'Jinete en camello',
+'Heavy Camel Rider':'Camello pesado',
 
 Monk:'Monje',
 
-'Hand Cannoneer':
-'Cañonero de mano',
+'Hand Cannoneer':'Cañonero de mano',
 
-'Battering Ram':
-'Ariete',
-
-'Capped Ram':
-'Ariete cubierto',
-
-'Siege Ram':
-'Ariete de asedio',
+'Battering Ram':'Ariete',
+'Capped Ram':'Ariete cubierto',
+'Siege Ram':'Ariete de asedio',
 
 Mangonel:'Mangonel',
-
 Onager:'Onagro',
-
-'Siege Onager':
-'Onagro de asedio',
+'Siege Onager':'Onagro de asedio',
 
 Scorpion:'Escorpión',
-
-'Heavy Scorpion':
-'Escorpión pesado',
+'Heavy Scorpion':'Escorpión pesado',
 
 Trebuchet:'Lanzapiedras',
-
-'Bombard Cannon':
-'Cañón de bombarda',
-
+'Bombard Cannon':'Cañón de bombarda',
 Petard:'Petardo',
 
-'Eagle Scout':
-'Explorador águila',
+'Eagle Scout':'Explorador águila',
+'Eagle Warrior':'Guerrero águila',
+'Elite Eagle Warrior':'Guerrero águila de élite',
 
-'Eagle Warrior':
-'Guerrero águila',
+Longbowman:'Arquero de tiro largo',
+Cataphract:'Catafracta',
+Huskarl:'Huscarle',
+Samurai:'Samurái',
+Mangudai:'Mangudai',
 
-'Elite Eagle Warrior':
-'Guerrero águila de élite',
+'War Elephant':'Elefante de guerra',
+Mameluke:'Mameluco',
 
-Longbowman:
-'Arquero de tiro largo',
+'Teutonic Knight':'Caballero teutónico',
+Janissary:'Jenízaro',
 
-Cataphract:
-'Catafracta',
+Conquistador:'Conquistador',
+'Jaguar Warrior':'Guerrero jaguar',
+'Plumed Archer':'Arquero emplumado',
 
-Huskarl:
-'Huscarle',
+Tarkan:'Tarcano',
+'War Wagon':'Carreta de guerra',
 
-Samurai:
-'Samurái',
+'Genoese Crossbowman':'Ballestero genovés',
+'Magyar Huszar':'Húsar magiar',
 
-Mangudai:
-'Mangudai',
+'Elephant Archer':'Arquero elefante',
+Boyar:'Boyardo',
+Kamayuk:'Kamayuk',
 
-'War Elephant':
-'Elefante de guerra',
+Gbeto:'Gbeto',
+'Shotel Warrior':'Guerrero shotel',
 
-Mameluke:
-'Mameluco',
+'Ballista Elephant':'Elefante balista',
+'Karambit Warrior':'Guerrero karambit',
 
-'Teutonic Knight':
-'Caballero teutónico',
+Arambai:'Arambai',
+'Rattan Archer':'Arquero de ratán',
 
-Janissary:
-'Jenízaro',
+Konnik:'Konnik',
+Kipchak:'Kipchak',
 
-Conquistador:
-'Conquistador',
+Leitis:'Leitis',
+Keshik:'Keshik',
 
-'Jaguar Warrior':
-'Guerrero jaguar',
+Coustillier:'Coutilier',
+Serjeant:'Sargento',
 
-'Plumed Archer':
-'Arquero emplumado',
+Obuch:'Obuch',
+'Hussite Wagon':'Carreta husita',
 
-Tarkan:
-'Tarcano',
+Ratha:'Ratha',
 
-'War Wagon':
-'Carreta de guerra',
+'Chakram Thrower':'Lanzador de chakram',
+'Shrivamsha Rider':'Jinete shrivamsha',
 
-'Genoese Crossbowman':
-'Ballestero genovés',
+Ghulam:'Ghulam',
 
-'Magyar Huszar':
-'Húsar magiar',
+'Urumi Swordsman':'Espadachín urumi',
+'Composite Bowman':'Arquero compuesto',
 
-'Elephant Archer':
-'Arquero elefante',
-
-Boyar:
-'Boyardo',
-
-Kamayuk:
-'Kamayuk',
-
-Gbeto:
-'Gbeto',
-
-'Shotel Warrior':
-'Guerrero shotel',
-
-'Ballista Elephant':
-'Elefante balista',
-
-'Karambit Warrior':
-'Guerrero karambit',
-
-Arambai:
-'Arambai',
-
-'Rattan Archer':
-'Arquero de ratán',
-
-Konnik:
-'Konnik',
-
-Kipchak:
-'Kipchak',
-
-Leitis:
-'Leitis',
-
-Keshik:
-'Keshik',
-
-'Coustillier':
-'Coutilier',
-
-Serjeant:
-'Sargento',
-
-Obuch:
-'Obuch',
-
-'Hussite Wagon':
-'Carreta husita',
-
-Ratha:
-'Ratha',
-
-'Chakram Thrower':
-'Lanzador de chakram',
-
-'Shrivamsha Rider':
-'Jinete shrivamsha',
-
-Ghulam:
-'Ghulam',
-
-'Urumi Swordsman':
-'Espadachín urumi',
-
-'Composite Bowman':
-'Arquero compuesto',
-
-Monaspa:
-'Monaspa'
+Monaspa:'Monaspa'
 
 };
 
 
-/*
-=============================================================
-RECURSOS
-=============================================================
-*/
+/* =========================================================
+   COSTES
 
-function resMap(arr){
+   IMPORTANTE:
+   El JSON actual usa un OBJETO:
+   Cost: { Food: 60, Gold: 75 }
+========================================================= */
 
-const result = {
+function resMap(cost){
 
-Food:0,
-
-Wood:0,
-
-Gold:0,
-
-Stone:0
-
-};
-
-
-(arr || [])
-.forEach(c=>{
-
-if(
-c &&
-c.Type &&
-result[c.Type] !== undefined
-){
-
-result[c.Type] +=
-Number(c.Amount) || 0;
-
-}
-
-});
-
-
-return result;
+  return {
+    Food:Number(cost?.Food) || 0,
+    Wood:Number(cost?.Wood) || 0,
+    Gold:Number(cost?.Gold) || 0,
+    Stone:Number(cost?.Stone) || 0
+  };
 
 }
 
 
-/*
-=============================================================
-CLASIFICACIÓN
-=============================================================
-*/
+/* =========================================================
+   CLASIFICACIÓN
+========================================================= */
 
 function classify(name){
 
-const n =
-name.toLowerCase();
+  const n =
+    String(name || '')
+    .toLowerCase();
 
 
-if(
-/galley|galleon|fire ship|demolition|longboat|turtle ship|caravel|cannon galleon|dromon/.test(n)
-){
-
-return 'Naval';
-
-}
+  if(
+    /galley|galleon|fire ship|demolition|longboat|turtle ship|caravel|cannon galleon|dromon/.test(n)
+  ){
+    return 'Naval';
+  }
 
 
-if(
-/monk|missionary/.test(n)
-){
-
-return 'Monjes';
-
-}
+  if(
+    /monk|missionary/.test(n)
+  ){
+    return 'Monjes';
+  }
 
 
-if(
-/ram|mangonel|onager|scorpion|trebuchet|bombard cannon|petard|houfnice|siege|organ gun|hussite wagon/.test(n)
-){
-
-return 'Asedio';
-
-}
+  if(
+    /ram|mangonel|onager|scorpion|trebuchet|bombard cannon|petard|houfnice|siege|organ gun|hussite wagon/.test(n)
+  ){
+    return 'Asedio';
+  }
 
 
-if(
-/archer|bowman|skirmisher|crossbow|arbalest|janissary|hand cannoneer|chu ko nu|gbeto|mameluke|chakram|conquistador|arambai|wagon|ratha/.test(n)
-){
-
-return 'Arqueros';
-
-}
+  if(
+    /archer|bowman|skirmisher|crossbow|arbalest|janissary|hand cannoneer|chu ko nu|gbeto|mameluke|chakram|conquistador|arambai|wagon|ratha/.test(n)
+  ){
+    return 'Arqueros';
+  }
 
 
-if(
-/knight|caval|hussar|camel|paladin|cavalier|tarkan|cataphract|leitis|keshik|konnik|monaspa|coustillier|elephant/.test(n)
-){
-
-return 'Caballería';
-
-}
+  if(
+    /knight|caval|hussar|camel|paladin|cavalier|tarkan|cataphract|leitis|keshik|konnik|monaspa|coustillier|elephant/.test(n)
+  ){
+    return 'Caballería';
+  }
 
 
-return 'Infantería';
+  return 'Infantería';
 
 }
 
 
 function isMilitary(name){
 
-const n =
-name.toLowerCase();
+  const n =
+    String(name || '')
+    .toLowerCase();
 
 
-return !(
-/villager|trade cart|trade cog|fishing ship|transport ship|sheep|boar|deer|wolf|horse$|cow|goat|llama|buffalo|turkey|relic|king/.test(n)
-);
-
-}
-
-
-/*
-=============================================================
-CARGA DE DATOS CON FALLBACK
-=============================================================
-*/
-
-async function fetchData(){
-
-let lastError = null;
-
-
-for(
-const url
-of
-DATA_SOURCES
-){
-
-try{
-
-const response =
-await fetch(
-url,
-{
-cache:'no-store'
-}
-);
-
-
-if(
-!response.ok
-){
-
-throw new Error(
-'HTTP ' +
-response.status
-);
+  return !(
+    /villager|trade cart|trade cog|fishing ship|transport ship|sheep|boar|deer|wolf|horse$|cow|goat|llama|buffalo|turkey|relic|king/.test(n)
+  );
 
 }
 
 
-return await
-response.json();
+/* =========================================================
+   IMAGEN FALLBACK
+========================================================= */
 
-}catch(error){
+function imageFailed(img,id){
 
-lastError =
-error;
+  if(
+    img.dataset.fallback !== '1'
+  ){
+
+    img.dataset.fallback = '1';
+
+    img.src =
+      IMG_FALLBACK +
+      id +
+      '.png';
+
+    return;
+
+  }
+
+
+  img.style.display =
+    'none';
+
+  img.parentElement.textContent =
+    '⚔️';
 
 }
 
-}
 
-
-throw lastError ||
-new Error(
-'No se pudieron cargar los datos'
-);
-
-}
-
-
-/*
-=============================================================
-CARGA
-=============================================================
-*/
+/* =========================================================
+   CARGA DATOS
+========================================================= */
 
 async function load(){
 
-try{
+  try{
 
-raw =
-await fetchData();
-
-
-civs =
-raw.civs || {};
-
-
-const unitData =
-raw.data?.Unit || {};
+    const response =
+      await fetch(
+        DATA_URL,
+        {
+          cache:'no-store'
+        }
+      );
 
 
-units =
-Object
-.entries(unitData)
-.map(
-([id,u])=>{
+    if(
+      !response.ok
+    ){
 
-const cost =
-resMap(
-u.Cost
-);
+      throw new Error(
+        'HTTP ' +
+        response.status
+      );
+
+    }
 
 
-return {
+    raw =
+      await response.json();
 
-id:
-Number(id),
 
-name:
-u.internal_name ||
-('Unidad ' + id),
+    civs =
+      raw?.civs || {};
 
-display:
-nameES[
-u.internal_name
-]
-||
-u.internal_name
-||
-('Unidad ' + id),
 
-food:
-cost.Food,
+    const unitData =
+      raw?.data?.Unit || {};
 
-wood:
-cost.Wood,
 
-gold:
-cost.Gold,
+    units =
+      Object.entries(unitData)
 
-stone:
-cost.Stone,
+      .map(
+        ([id,u])=>{
 
-time:
-Number(
-u.TrainTime
-)
-||
-0,
+          const cost =
+            resMap(
+              u?.Cost
+            );
 
-cat:
-classify(
-u.internal_name || ''
-)
 
-};
+          const internalName =
+            u?.internal_name ||
+            (
+              'Unidad ' +
+              id
+            );
+
+
+          return {
+
+            id:Number(id),
+
+            name:internalName,
+
+            display:
+              nameES[internalName] ||
+              internalName,
+
+            food:cost.Food,
+
+            wood:cost.Wood,
+
+            gold:cost.Gold,
+
+            stone:cost.Stone,
+
+            time:
+              Number(
+                u?.TrainTime
+              )
+              ||
+              0,
+
+            cat:
+              classify(
+                internalName
+              )
+
+          };
+
+        }
+      )
+
+      .filter(
+        u =>
+          u.time > 0
+          &&
+          isMilitary(
+            u.name
+          )
+          &&
+          (
+            u.food ||
+            u.wood ||
+            u.gold ||
+            u.stone
+          )
+      );
+
+
+    const civNames =
+      Object.keys(civs);
+
+
+    $('civ').innerHTML =
+      civNames
+
+      .sort(
+        (a,b)=>
+          (
+            esCivs[a] ||
+            a
+          )
+          .localeCompare(
+            esCivs[b] ||
+            b,
+            'es'
+          )
+      )
+
+      .map(
+        civ =>
+          `
+          <option value="${civ}">
+            ${esCivs[civ] || civ}
+          </option>
+          `
+      )
+
+      .join('');
+
+
+    if(
+      civs.Britons
+    ){
+
+      $('civ').value =
+        'Britons';
+
+    }
+
+
+    $('statusDot')
+      .className =
+      'dot ok';
+
+
+    $('statusText')
+      .textContent =
+      'Datos cargados';
+
+
+    buildTabs();
+
+    render();
+
+    calc();
+
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+
+    $('statusDot')
+      .className =
+      'dot bad';
+
+
+    $('statusText')
+      .textContent =
+      'Error';
+
+
+    $('units').innerHTML =
+      `
+      <div class="error">
+        No se pudieron cargar los datos.<br><br>
+        Prueba a recargar la página.
+      </div>
+      `;
+
+  }
 
 }
-)
-.filter(
-u=>
-u.time > 0
-&&
-isMilitary(
-u.name
-)
-&&
-(
-u.food
-||
-u.wood
-||
-u.gold
-||
-u.stone
-)
-);
 
 
-$('civ')
-.innerHTML =
-Object
-.keys(civs)
-.sort(
-(a,b)=>
-(esCivs[a] || a)
-.localeCompare(
-esCivs[b] || b,
-'es'
-)
-)
-.map(
-c=>
-`<option value="${c}">
-${esCivs[c] || c}
-</option>`
-)
-.join('');
-
-
-if(
-civs.Britons
-){
-
-$('civ').value =
-'Britons';
-
-}
-
-
-$('statusDot')
-.className =
-'dot ok';
-
-
-$('statusText')
-.textContent =
-'Datos cargados';
-
-
-buildTabs();
-
-render();
-
-calc();
-
-}catch(error){
-
-console.error(error);
-
-
-$('statusDot')
-.className =
-'dot bad';
-
-
-$('statusText')
-.textContent =
-'Error';
-
-
-$('units')
-.innerHTML =
-`
-<div class="error">
-No se han podido cargar los datos.
-Recarga la página.
-</div>
-`;
-
-}
-
-}
-
-
-/*
-=============================================================
-DISPONIBILIDAD POR CIVILIZACIÓN
-=============================================================
-*/
+/* =========================================================
+   UNIDADES DE LA CIVILIZACIÓN
+========================================================= */
 
 function availableUnits(){
 
-const civ =
-civs[
-$('civ').value
-];
+  const civ =
+    civs[
+      $('civ').value
+    ];
 
 
-if(
-!civ
-){
+  if(
+    !civ
+  ){
 
-return units;
+    return units;
+
+  }
+
+
+  const ids =
+    new Set(
+      (
+        civ.Unit ||
+        []
+      )
+      .map(Number)
+    );
+
+
+  return units.filter(
+    unit =>
+      ids.has(
+        unit.id
+      )
+  );
 
 }
 
 
-const ids =
-new Set(
-(civ.Unit || [])
-.map(Number)
-);
-
-
-return units.filter(
-u=>
-ids.has(
-u.id
-)
-);
-
-}
-
-
-/*
-=============================================================
-PESTAÑAS
-=============================================================
-*/
+/* =========================================================
+   PESTAÑAS
+========================================================= */
 
 function buildTabs(){
 
-const cats = [
+  const categories = [
 
-'Todas',
+    'Todas',
+    'Infantería',
+    'Arqueros',
+    'Caballería',
+    'Asedio',
+    'Monjes',
+    'Naval'
 
-'Infantería',
-
-'Arqueros',
-
-'Caballería',
-
-'Asedio',
-
-'Monjes',
-
-'Naval'
-
-];
+  ];
 
 
-$('tabs')
-.innerHTML =
-cats
-.map(
-c=>
-`
-<button
-class="tab ${c === 'Todas' ? 'on' : ''}"
-data-cat="${c}"
->
-${c}
-</button>
-`
-)
-.join('');
+  $('tabs').innerHTML =
+    categories
+
+    .map(
+      category =>
+        `
+        <button
+          class="tab ${category === 'Todas' ? 'on' : ''}"
+          data-cat="${category}"
+        >
+          ${category}
+        </button>
+        `
+    )
+
+    .join('');
 
 }
 
 
-/*
-=============================================================
-DIBUJAR UNIDADES
-=============================================================
-*/
+/* =========================================================
+   RENDER
+========================================================= */
 
 function render(){
 
-if(
-!raw
-){
-
-return;
-
-}
+  if(
+    !raw
+  ){
+    return;
+  }
 
 
-let list =
-availableUnits();
+  let list =
+    availableUnits();
 
 
-const q =
-$('search')
-.value
-.trim()
-.toLowerCase();
+  const query =
+    $('search')
+    .value
+    .trim()
+    .toLowerCase();
 
 
-if(
-filter !==
-'Todas'
-){
+  if(
+    filter !==
+    'Todas'
+  ){
 
-list =
-list.filter(
-u=>
-u.cat ===
-filter
-);
+    list =
+      list.filter(
+        unit =>
+          unit.cat ===
+          filter
+      );
 
-}
-
-
-if(q){
-
-list =
-list.filter(
-u=>
-(
-u.display +
-' ' +
-u.name
-)
-.toLowerCase()
-.includes(q)
-);
-
-}
+  }
 
 
-$('unitCount')
-.textContent =
-list.length +
-' unidades';
+  if(
+    query
+  ){
+
+    list =
+      list.filter(
+        unit =>
+          (
+            unit.display +
+            ' ' +
+            unit.name
+          )
+          .toLowerCase()
+          .includes(query)
+      );
+
+  }
 
 
-if(
-!list.length
-){
-
-$('units')
-.innerHTML =
-`
-<div class="empty">
-No hay unidades con este filtro.
-</div>
-`;
-
-return;
-
-}
+  $('unitCount')
+    .textContent =
+    list.length +
+    ' unidades';
 
 
-$('units')
-.innerHTML =
-list
-.map(
-u=>{
+  if(
+    !list.length
+  ){
 
-const amount =
-selected[u.id] || 0;
+    $('units').innerHTML =
+      `
+      <div class="empty">
+        No hay unidades con este filtro.
+      </div>
+      `;
 
+    return;
 
-const src =
-imageSources(
-u.id
-)[0];
-
-
-return `
-
-<article
-class="unit ${amount ? 'active' : ''}"
-onclick="toggleUnit(${u.id})"
->
-
-<div class="pic">
-
-<img
-src="${src}"
-data-source="0"
-loading="lazy"
-alt="${u.display}"
-onerror="nextImage(this,${u.id})"
->
-
-</div>
+  }
 
 
-<div>
+  $('units').innerHTML =
+    list
 
-<h3>
-${u.display}
-</h3>
+    .map(
+      unit => {
 
-
-<div class="tags">
-
-${u.food
-?
-`<span class="tag">🍖 ${u.food}</span>`
-:
-''}
-
-${u.wood
-?
-`<span class="tag">🪵 ${u.wood}</span>`
-:
-''}
-
-${u.gold
-?
-`<span class="tag">🪙 ${u.gold}</span>`
-:
-''}
-
-${u.stone
-?
-`<span class="tag">🪨 ${u.stone}</span>`
-:
-''}
-
-</div>
+        const amount =
+          selected[
+            unit.id
+          ]
+          ||
+          0;
 
 
-<div class="meta">
+        return `
 
-${u.cat}
-·
-${u.time}s
+        <article
+          class="unit ${amount ? 'active' : ''}"
+          onclick="toggleUnit(${unit.id})"
+        >
 
-</div>
+          <div class="pic">
 
-</div>
+            <img
+              loading="lazy"
+              src="${IMG_BASE}${unit.id}.png"
+              alt="${unit.display}"
+              data-fallback="0"
+              onerror="imageFailed(this,${unit.id})"
+            >
 
+          </div>
 
-<div
-class="qty"
-onclick="event.stopPropagation()"
->
+          <div>
 
-<button
-onclick="changeQty(${u.id},-1)"
->
-−
-</button>
+            <h3>
+              ${unit.display}
+            </h3>
 
-<b>
-${amount}
-</b>
+            <div class="tags">
 
-<button
-onclick="changeQty(${u.id},1)"
->
-+
-</button>
+              ${
+                unit.food
+                ?
+                `<span class="tag">🍖 ${unit.food}</span>`
+                :
+                ''
+              }
 
-</div>
+              ${
+                unit.wood
+                ?
+                `<span class="tag">🪵 ${unit.wood}</span>`
+                :
+                ''
+              }
 
-</article>
+              ${
+                unit.gold
+                ?
+                `<span class="tag">🪙 ${unit.gold}</span>`
+                :
+                ''
+              }
 
-`;
+              ${
+                unit.stone
+                ?
+                `<span class="tag">🪨 ${unit.stone}</span>`
+                :
+                ''
+              }
 
-}
-)
-.join('');
+            </div>
+
+            <div class="meta">
+              ${unit.cat} · ${unit.time}s
+            </div>
+
+          </div>
+
+          <div
+            class="qty"
+            onclick="event.stopPropagation()"
+          >
+
+            <button
+              onclick="changeQty(${unit.id},-1)"
+            >
+              −
+            </button>
+
+            <b>
+              ${amount}
+            </b>
+
+            <button
+              onclick="changeQty(${unit.id},1)"
+            >
+              +
+            </button>
+
+          </div>
+
+        </article>
+
+        `;
+
+      }
+    )
+
+    .join('');
 
 }
 
 
-/*
-=============================================================
-CANTIDADES
-=============================================================
-*/
+/* =========================================================
+   CANTIDADES
+========================================================= */
 
 function toggleUnit(id){
 
-selected[id] =
-selected[id]
-?
-0
-:
-1;
+  selected[id] =
+    selected[id]
+    ?
+    0
+    :
+    1;
 
 
-render();
+  render();
 
-calc();
-
-}
-
-
-function changeQty(id,d){
-
-selected[id] =
-Math.max(
-0,
-(selected[id] || 0)
-+
-d
-);
-
-
-render();
-
-calc();
+  calc();
 
 }
 
 
-/*
-=============================================================
-VELOCIDADES DE RECOLECCIÓN
-=============================================================
-*/
+function changeQty(id,diff){
+
+  selected[id] =
+    Math.max(
+      0,
+      (
+        selected[id] ||
+        0
+      )
+      +
+      diff
+    );
+
+
+  render();
+
+  calc();
+
+}
+
+
+/* =========================================================
+   TASAS DE RECOLECCIÓN
+========================================================= */
 
 function rates(){
 
-const foodBase = {
+  const foodBase = {
 
-farm:.32,
+    farm:.32,
 
-sheep:.34,
+    sheep:.34,
 
-boar:.41,
+    boar:.41,
 
-berries:.31,
+    berries:.31,
 
-fish:.43
+    fish:.43
 
-}[
-$('foodSource')
-.value
-]
-||
-.32;
-
-
-let r = {
-
-food:
-foodBase,
-
-wood:
-.39,
-
-gold:
-.38,
-
-stone:
-.36
-
-};
+  }[
+    $('foodSource').value
+  ]
+  ||
+  .32;
 
 
-if(
-activeUpgrades
-.has(
-'wheelbarrow'
-)
-){
+  const rates = {
 
-Object
-.keys(r)
-.forEach(
-k=>
-r[k] *=
-1.03
-);
+    food:foodBase,
 
-}
+    wood:.39,
+
+    gold:.38,
+
+    stone:.36
+
+  };
 
 
-if(
-activeUpgrades
-.has(
-'handcart'
-)
-){
+  if(
+    activeUpgrades.has(
+      'wheelbarrow'
+    )
+  ){
 
-Object
-.keys(r)
-.forEach(
-k=>
-r[k] *=
-1.05
-);
+    Object.keys(rates)
+      .forEach(
+        key =>
+          rates[key] *=
+          1.03
+      );
 
-}
+  }
 
 
-if(
-activeUpgrades.has('wood1')
-){
-r.wood *= 1.10;
-}
+  if(
+    activeUpgrades.has(
+      'handcart'
+    )
+  ){
+
+    Object.keys(rates)
+      .forEach(
+        key =>
+          rates[key] *=
+          1.05
+      );
+
+  }
 
 
-if(
-activeUpgrades.has('wood2')
-){
-r.wood *= 1.20;
-}
+  if(
+    activeUpgrades.has('wood1')
+  ){
+    rates.wood *= 1.10;
+  }
 
 
-if(
-activeUpgrades.has('wood3')
-){
-r.wood *= 1.10;
-}
+  if(
+    activeUpgrades.has('wood2')
+  ){
+    rates.wood *= 1.20;
+  }
 
 
-if(
-activeUpgrades.has('gold1')
-){
-r.gold *= 1.15;
-}
+  if(
+    activeUpgrades.has('wood3')
+  ){
+    rates.wood *= 1.10;
+  }
 
 
-if(
-activeUpgrades.has('gold2')
-){
-r.gold *= 1.15;
-}
+  if(
+    activeUpgrades.has('gold1')
+  ){
+    rates.gold *= 1.15;
+  }
 
 
-if(
-activeUpgrades.has('stone1')
-){
-r.stone *= 1.15;
-}
+  if(
+    activeUpgrades.has('gold2')
+  ){
+    rates.gold *= 1.15;
+  }
 
 
-if(
-activeUpgrades.has('stone2')
-){
-r.stone *= 1.15;
-}
+  if(
+    activeUpgrades.has('stone1')
+  ){
+    rates.stone *= 1.15;
+  }
 
 
-r.food *=
-Number(
-$('foodMult').value
-)
-||
-1;
+  if(
+    activeUpgrades.has('stone2')
+  ){
+    rates.stone *= 1.15;
+  }
 
 
-r.wood *=
-Number(
-$('woodMult').value
-)
-||
-1;
+  rates.food *=
+    Number(
+      $('foodMult').value
+    )
+    ||
+    1;
 
 
-r.gold *=
-Number(
-$('goldMult').value
-)
-||
-1;
+  rates.wood *=
+    Number(
+      $('woodMult').value
+    )
+    ||
+    1;
 
 
-r.stone *=
-Number(
-$('stoneMult').value
-)
-||
-1;
+  rates.gold *=
+    Number(
+      $('goldMult').value
+    )
+    ||
+    1;
 
 
-const efficiency =
-Math.min(
-1,
-Math.max(
-.5,
-Number(
-$('efficiency').value
-)
-||
-.95
-)
-);
+  rates.stone *=
+    Number(
+      $('stoneMult').value
+    )
+    ||
+    1;
 
 
-Object
-.keys(r)
-.forEach(
-k=>
-r[k] *=
-efficiency
-);
+  const efficiency =
+    Math.min(
+      1,
+      Math.max(
+        .5,
+        Number(
+          $('efficiency').value
+        )
+        ||
+        .95
+      )
+    );
 
 
-return r;
+  Object.keys(rates)
+    .forEach(
+      key =>
+        rates[key] *=
+        efficiency
+    );
+
+
+  return rates;
 
 }
 
 
-/*
-=============================================================
-CÁLCULO
-=============================================================
-*/
+/* =========================================================
+   CÁLCULO
+========================================================= */
 
 function calc(){
 
-if(
-!raw
-){
-
-return;
-
-}
+  if(
+    !raw
+  ){
+    return;
+  }
 
 
-const r =
-rates();
+  const gather =
+    rates();
 
 
-const trainingSpeed =
-Math.max(
-.1,
-Number(
-$('trainMult')
-.value
-)
-||
-1
-);
+  const trainingSpeed =
+    Math.max(
+      .1,
+      Number(
+        $('trainMult').value
+      )
+      ||
+      1
+    );
 
 
-const need = {
+  const need = {
 
-food:0,
+    food:0,
 
-wood:0,
+    wood:0,
 
-gold:0,
+    gold:0,
 
-stone:0
+    stone:0
 
-};
-
-
-const names = [];
-
-let totalLines = 0;
+  };
 
 
-Object
-.entries(selected)
-.forEach(
-([id,count])=>{
-
-count =
-Number(count) || 0;
+  const names = [];
 
 
-if(
-count <= 0
-){
+  Object.entries(selected)
+    .forEach(
+      ([id,count])=>{
 
-return;
-
-}
-
-
-const unit =
-units.find(
-u=>
-u.id ===
-Number(id)
-);
+        count =
+          Number(count)
+          ||
+          0;
 
 
-if(
-!unit
-){
-
-return;
-
-}
+        if(
+          count <= 0
+        ){
+          return;
+        }
 
 
-const unitsPerSecond =
-count *
-trainingSpeed /
-unit.time;
+        const unit =
+          units.find(
+            item =>
+              item.id ===
+              Number(id)
+          );
 
 
-need.food +=
-unit.food *
-unitsPerSecond;
+        if(
+          !unit
+        ){
+          return;
+        }
 
 
-need.wood +=
-unit.wood *
-unitsPerSecond;
+        const unitsPerSecond =
+          count *
+          trainingSpeed /
+          unit.time;
 
 
-need.gold +=
-unit.gold *
-unitsPerSecond;
+        need.food +=
+          unit.food *
+          unitsPerSecond;
 
 
-need.stone +=
-unit.stone *
-unitsPerSecond;
+        need.wood +=
+          unit.wood *
+          unitsPerSecond;
 
 
-totalLines +=
-count;
+        need.gold +=
+          unit.gold *
+          unitsPerSecond;
 
 
-names.push(
-`${unit.display} ×${count}`
-);
-
-}
-);
+        need.stone +=
+          unit.stone *
+          unitsPerSecond;
 
 
-$('outFood')
-.textContent =
-(
-need.food /
-r.food
-)
-.toFixed(1);
+        names.push(
+          `${unit.display} ×${count}`
+        );
+
+      }
+    );
 
 
-$('outWood')
-.textContent =
-(
-need.wood /
-r.wood
-)
-.toFixed(1);
+  $('outFood')
+    .textContent =
+    (
+      need.food /
+      gather.food
+    )
+    .toFixed(1);
 
 
-$('outGold')
-.textContent =
-(
-need.gold /
-r.gold
-)
-.toFixed(1);
+  $('outWood')
+    .textContent =
+    (
+      need.wood /
+      gather.wood
+    )
+    .toFixed(1);
 
 
-$('outStone')
-.textContent =
-(
-need.stone /
-r.stone
-)
-.toFixed(1);
+  $('outGold')
+    .textContent =
+    (
+      need.gold /
+      gather.gold
+    )
+    .toFixed(1);
 
 
-$('summary')
-.textContent =
-totalLines
-?
-names.join(' · ')
-:
-'Selecciona una unidad para empezar.';
+  $('outStone')
+    .textContent =
+    (
+      need.stone /
+      gather.stone
+    )
+    .toFixed(1);
+
+
+  $('summary')
+    .textContent =
+    names.length
+    ?
+    names.join(' · ')
+    :
+    'Selecciona una unidad para empezar.';
 
 }
 
 
-/*
-=============================================================
-EVENTOS
-=============================================================
-*/
+/* =========================================================
+   EVENTOS
+========================================================= */
 
 $('tabs')
 .addEventListener(
-'click',
-e=>{
+  'click',
+  event => {
 
-const button =
-e.target.closest(
-'[data-cat]'
-);
-
-
-if(
-!button
-){
-
-return;
-
-}
+    const button =
+      event.target.closest(
+        '[data-cat]'
+      );
 
 
-filter =
-button.dataset.cat;
+    if(
+      !button
+    ){
+      return;
+    }
 
 
-document
-.querySelectorAll(
-'.tab'
-)
-.forEach(
-tab=>
-tab
-.classList
-.toggle(
-'on',
-tab.dataset.cat === filter
-)
-);
+    filter =
+      button.dataset.cat;
 
 
-render();
+    document
+      .querySelectorAll(
+        '.tab'
+      )
+      .forEach(
+        tab =>
+          tab.classList.toggle(
+            'on',
+            tab.dataset.cat ===
+            filter
+          )
+      );
 
-}
+
+    render();
+
+  }
 );
 
 
 $('search')
 .addEventListener(
-'input',
-render
+  'input',
+  render
 );
 
 
 $('civ')
 .addEventListener(
-'change',
-()=>{
+  'change',
+  () => {
 
-selected = {};
+    selected = {};
 
-render();
+    render();
 
-calc();
+    calc();
 
-}
+  }
 );
 
 
 $('foodSource')
 .addEventListener(
-'change',
-calc
+  'change',
+  calc
 );
 
 
 $('clearBtn')
 .addEventListener(
-'click',
-()=>{
+  'click',
+  () => {
 
-selected = {};
+    selected = {};
 
-$('search').value =
-'';
+    $('search').value =
+      '';
 
-render();
+    render();
 
-calc();
+    calc();
 
-}
+  }
 );
 
 
 $('upgrades')
 .addEventListener(
-'click',
-e=>{
+  'click',
+  event => {
 
-const button =
-e.target.closest(
-'[data-up]'
-);
-
-
-if(
-!button
-){
-
-return;
-
-}
+    const button =
+      event.target.closest(
+        '[data-up]'
+      );
 
 
-const key =
-button.dataset.up;
+    if(
+      !button
+    ){
+      return;
+    }
 
 
-if(
-activeUpgrades.has(key)
-){
-
-activeUpgrades.delete(key);
-
-}else{
-
-activeUpgrades.add(key);
-
-}
+    const key =
+      button.dataset.up;
 
 
-button
-.classList
-.toggle(
-'on',
-activeUpgrades.has(key)
-);
+    if(
+      activeUpgrades.has(
+        key
+      )
+    ){
+
+      activeUpgrades.delete(
+        key
+      );
+
+    }else{
+
+      activeUpgrades.add(
+        key
+      );
+
+    }
 
 
-calc();
+    button.classList.toggle(
+      'on',
+      activeUpgrades.has(
+        key
+      )
+    );
 
-}
+
+    calc();
+
+  }
 );
 
 
 [
-'foodMult',
-'woodMult',
-'goldMult',
-'stoneMult',
-'trainMult',
-'efficiency'
+  'foodMult',
+  'woodMult',
+  'goldMult',
+  'stoneMult',
+  'trainMult',
+  'efficiency'
 ]
 .forEach(
-id=>
-$(id)
-.addEventListener(
-'input',
-calc
-)
+  id =>
+    $(id)
+    .addEventListener(
+      'input',
+      calc
+    )
 );
 
 
-/*
-=============================================================
-INICIAR
-=============================================================
-*/
+/* =========================================================
+   INICIAR
+========================================================= */
 
 load();
 
