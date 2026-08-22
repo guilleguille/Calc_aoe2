@@ -94,11 +94,24 @@ const CDN='https://cdn.jsdelivr.net/gh/SiegeEngineers/aoe2techtree@master/';
 const RAW='https://raw.githubusercontent.com/SiegeEngineers/aoe2techtree/master/';
 const $=id=>document.getElementById(id);
 let raw=null,strings={},civs={},units=[],techs=[],selected={},activeTech=new Set(),tree=null;
+const unitBuildingMap=new Map();
 const cache=new Map();
 
 const CIV_ES={Armenians:'Armenios',Aztecs:'Aztecas',Bengalis:'Bengalíes',Berbers:'Bereberes',Bohemians:'Bohemios',Britons:'Britones',Bulgarians:'Búlgaros',Burgundians:'Borgoñones',Byzantines:'Bizantinos',Celts:'Celtas',Chinese:'Chinos',Cumans:'Cumanos',Dravidians:'Drávidas',Ethiopians:'Etíopes',Franks:'Francos',Georgians:'Georgianos',Goths:'Godos',Gurjaras:'Gurjaras',Hindustanis:'Hindustanes',Huns:'Hunos',Incas:'Incas',Italians:'Italianos',Japanese:'Japoneses',Khmer:'Jemer',Koreans:'Coreanos',Lithuanians:'Lituanos',Magyars:'Magiares',Malay:'Malayos',Malians:'Malíes',Mayans:'Mayas',Mongols:'Mongoles',Persians:'Persas',Poles:'Polacos',Portuguese:'Portugueses',Romans:'Romanos',Saracens:'Sarracenos',Sicilians:'Sicilianos',Slavs:'Eslavos',Spanish:'Españoles',Tatars:'Tártaros',Teutons:'Teutones',Turks:'Turcos',Vietnamese:'Vietnamitas',Vikings:'Vikingos'};
 
 const CIV_RULES={Britons:{sheep:1.25,label:'Pastores +25 %.'},Celts:{wood:1.15,label:'Leñadores +15 %.'},Franks:{berries:1.15,label:'Recolectores de bayas +15 %.'},Koreans:{stone:1.20,label:'Mineros de piedra +20 %.'},Mongols:{boar:1.40,label:'Cazadores +40 %.'},Slavs:{farm:1.10,label:'Granjeros +10 %.'},Turks:{gold:1.20,label:'Mineros de oro +20 %.'},Romans:{all:1.05,label:'Aldeanos +5 %.'},Mayans:{farmLife:1.15,label:'Recursos duran +15 %.'},Teutons:{farmCost:.60,label:'Granjas 40 % más baratas.'}};
+
+// Bonificaciones que modifican directamente la velocidad de creación.
+// Un multiplicador 1.15 significa que el edificio produce un 15 % más rápido.
+const PRODUCTION_RULES={
+  Aztecs:{all:1.15,label:'Unidades militares: +15 % velocidad de entrenamiento.'},
+  Britons:{building:{87:1.10},label:'Galerías de tiro con arco: +10 % velocidad de trabajo.'},
+  Goths:{building:{12:1.20},label:'Cuarteles: +20 % velocidad de trabajo.'},
+  Huns:{building:{101:1.20},label:'Establos: +20 % velocidad de trabajo.'},
+  Celts:{building:{49:1.20},label:'Talleres de maquinaria de asedio: +20 % velocidad de trabajo.'},
+  Turks:{gunpowder:1.25,label:'Unidades de pólvora: +25 % velocidad de entrenamiento.'},
+  Gurjaras:{camelElephant:1.25,label:'Unidades de camello y elefante: +25 % velocidad de entrenamiento.'}
+};
 
 const ECON=[
  ['wheelbarrow',['wheelbarrow'],'Carretilla','Mejora movilidad y capacidad de carga.'],
@@ -121,6 +134,55 @@ function norm(v){return strip(v).toLowerCase().normalize('NFD').replace(/[\u0300
 function parseCost(c){if(Array.isArray(c)){const o={Food:0,Wood:0,Gold:0,Stone:0};c.forEach(x=>{if(x&&x.Type in o)o[x.Type]+=Number(x.Amount)||0});return o}return{Food:Number(c&&c.Food)||0,Wood:Number(c&&c.Wood)||0,Gold:Number(c&&c.Gold)||0,Stone:Number(c&&c.Stone)||0}}
 async function getJSON(a,b){try{const r=await fetch(a,{cache:'no-store'});if(!r.ok)throw Error();return await r.json()}catch(e){const r=await fetch(b,{cache:'no-store'});if(!r.ok)throw e;return await r.json()}}
 function fullName(obj,fallback){const s=strings[String(obj&&obj.LanguageNameId)];return strip(s)||fallback}
+
+function expandGameName(name){
+  return String(name||'')
+    .replace(/\bArq\.\s*/gi,'Arquero ')
+    .replace(/\bArq\s+/gi,'Arquero ')
+    .replace(/\bde E\.\b/gi,'de élite')
+    .replace(/\bde E\.$/gi,'de élite')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+function displayUnitName(u){
+  const node=maps.Unit.get(Number(u.id))?.node;
+  if(node){
+    const sid=node.name_string_id;
+    const treeLabel=strip(strings[String(sid)]);
+    if(treeLabel && !/^[A-Z0-9_-]{3,}$/.test(treeLabel)){
+      return expandGameName(treeLabel);
+    }
+    const helpId=node.help_string_id;
+    const help=String(strings[String(helpId)]||'');
+    const match=help.match(/<b>([^<]+)<\/b>/i);
+    if(match && match[1]) return expandGameName(strip(match[1]));
+  }
+  if(u.name && !/^[A-Z0-9_-]{3,}$/.test(u.name)) return expandGameName(u.name);
+  const common={ARCHR:'Arquero',XBOWM:'Ballestero',CARCH:'Arquero a caballo',HXBOW:'Arquero a caballo pesado',CVRCH:'Arquero a caballo pesado'};
+  return common[String(u.internal||'').toUpperCase()]||expandGameName(u.name||u.internal||('Unidad '+u.id));
+}
+
+function isGunpowderUnit(u){
+  const n=norm(displayUnitName(u)+' '+(u.internal||''));
+  return /artillero manual|cañon de asedio|galeon artillado|jenizaro|conquistador|organ gun|cañon de salvas|obús|houfnice|bombard/.test(n);
+}
+
+function isCamelOrElephant(u){
+  const n=norm(displayUnitName(u)+' '+(u.internal||''));
+  return /camello|elefante/.test(n);
+}
+
+function productionMultiplier(u){
+  const rule=PRODUCTION_RULES[$('civ').value];
+  if(!rule) return 1;
+  let m=rule.all||1;
+  const buildingId=unitBuildingMap.get(Number(u.id));
+  if(rule.building && buildingId!=null && rule.building[buildingId]) m*=rule.building[buildingId];
+  if(rule.gunpowder && isGunpowderUnit(u)) m*=rule.gunpowder;
+  if(rule.camelElephant && isCamelOrElephant(u)) m*=rule.camelElephant;
+  return m;
+}
 function cellIds(grid,type){const out=[],re=new RegExp(type+'_(\\d+)_','g');(function walk(v){if(typeof v==='string'){let m;while((m=re.exec(v))!==null)out.push(Number(m[1]));re.lastIndex=0}else if(v&&typeof v==='object')Object.values(v).forEach(walk)})(grid);return [...new Set(out)]}
 function mapsFromTree(t){const m={Unit:new Map(),Tech:new Map(),Building:new Map()};const seen=new WeakSet();(function walk(v){if(!v||typeof v!=='object'||seen.has(v))return;seen.add(v);if(!Array.isArray(v)&&m[v.use_type]){const id=Number(v.node_id),pic=Number(v.picture_index);if(Number.isFinite(id))m[v.use_type].set(id,{node:v,picture:Number.isFinite(pic)?pic:null})}Object.values(v).forEach(walk)})(t);return m}
 let maps={Unit:new Map(),Tech:new Map(),Building:new Map()};
@@ -138,8 +200,14 @@ function bonusLines(){
 function renderBonus(){
  const lines=bonusLines();
  $('civBonusText').innerHTML=(lines.length?lines:['No hay descripción disponible.']).map(x=>`<div class="bonusLine">${esc(x)}</div>`).join('');
- const r=CIV_RULES[$('civ').value];
- $('appliedBonus').textContent=r?'Efecto aplicado automáticamente al cálculo: '+r.label:'Los bonos que no modifican directamente la recolección sostenida no alteran el resultado.';
+ const parts=[];
+ const eco=CIV_RULES[$('civ').value];
+ const prod=PRODUCTION_RULES[$('civ').value];
+ if(eco?.label) parts.push(eco.label);
+ if(prod?.label) parts.push(prod.label);
+ $('appliedBonus').innerHTML=parts.length
+   ? '<b>Efectos aplicados al cálculo:</b><br>'+parts.map(x=>'• '+esc(x)).join('<br>')
+   : 'Los bonos que no modifican directamente la recolección o la velocidad de producción sostenida no alteran el resultado.';
 }
 function econList(){
  const available=new Set((civs[$('civ').value]&&civs[$('civ').value].Tech||[]).map(Number)),out=[];
@@ -170,17 +238,21 @@ function renderTechs(){
 function availableUnits(){return new Set((civs[$('civ').value]&&civs[$('civ').value].Unit||[]).map(Number))}
 function gold(v){return `<span class="tag"><i class="ore"></i>${v}</span>`}
 function renderUnits(){
+ const openKeys=new Set([...document.querySelectorAll('#militaryBuildings details[open]')].map(d=>d.dataset.key).filter(Boolean));
  const available=availableUnits(),q=norm($('search').value),groups=[];
+ unitBuildingMap.clear();
  for(const b of (tree&&tree.buildings||[])){
+   const buildingId=Number(b.building_id ?? b.node_id);
    let items=cellIds(b.grid,'Unit').filter(id=>available.has(id)).map(id=>units.find(u=>u.id===id)).filter(Boolean);
-   if(q)items=items.filter(u=>norm(u.name+' '+u.internal).includes(q));
-   if(items.length)groups.push({b,items});
+   items.forEach(u=>unitBuildingMap.set(Number(u.id),buildingId));
+   if(q)items=items.filter(u=>norm(displayUnitName(u)+' '+u.internal).includes(q));
+   if(items.length)groups.push({b,items,key:String(buildingId)});
  }
  $('unitCount').textContent=groups.reduce((n,g)=>n+g.items.length,0)+' unidades';
  $('militaryBuildings').innerHTML=groups.length?groups.map(g=>{
    const b=g.b,name=strip(strings[String(b.name_string_id)])||strip(b.name)||'Edificio de producción',pic=Number.isFinite(Number(b.picture_index))?Number(b.picture_index):null;
-   const cards=g.items.map(u=>{const n=selected[u.id]||0,p=maps.Unit.get(u.id)?.picture;return `<article class="unit ${n?'active':''}" onclick="toggleUnit(${u.id})"><div class="pic">${img('Unit',p,u.name)}</div><div><h3>${esc(u.name)}</h3><div class="tags">${u.food?`<span class="tag">🍖 ${u.food}</span>`:''}${u.wood?`<span class="tag">🪵 ${u.wood}</span>`:''}${u.gold?gold(u.gold):''}${u.stone?`<span class="tag">🪨 ${u.stone}</span>`:''}</div><div class="meta">${u.time}s de entrenamiento</div></div><div class="qty" onclick="event.stopPropagation()"><button onclick="changeQty(${u.id},-1)">−</button><b>${n}</b><button onclick="changeQty(${u.id},1)">+</button></div></article>`}).join('');
-   return `<details class="treeGroup" ${q?'open':''}><summary><span class="groupPic">${img('Building',pic,name)}</span><span><div class="groupName">${esc(name)}</div><div class="groupMeta">${g.items.length} unidad${g.items.length===1?'':'es'} disponible${g.items.length===1?'':'s'}</div></span><span class="chev">⌄</span></summary><div class="units">${cards}</div></details>`;
+   const cards=g.items.map(u=>{const n=selected[u.id]||0,p=maps.Unit.get(u.id)?.picture,display=displayUnitName(u);return `<article class="unit ${n?'active':''}" onclick="toggleUnit(${u.id})"><div class="pic">${img('Unit',p,display)}</div><div><h3>${esc(display)}</h3><div class="tags">${u.food?`<span class="tag">🍖 ${u.food}</span>`:''}${u.wood?`<span class="tag">🪵 ${u.wood}</span>`:''}${u.gold?gold(u.gold):''}${u.stone?`<span class="tag">🪨 ${u.stone}</span>`:''}</div><div class="meta">${u.time}s base${productionMultiplier(u)>1?' · '+Math.round((productionMultiplier(u)-1)*100)+' % más rápido':''}</div></div><div class="qty" onclick="event.stopPropagation()"><button onclick="changeQty(${u.id},-1)">−</button><b>${n}</b><button onclick="changeQty(${u.id},1)">+</button></div></article>`}).join('');
+   return `<details class="treeGroup" data-key="${g.key}" ${(q||openKeys.has(g.key))?'open':''}><summary><span class="groupPic">${img('Building',pic,name)}</span><span><div class="groupName">${esc(name)}</div><div class="groupMeta">${g.items.length} unidad${g.items.length===1?'':'es'} disponible${g.items.length===1?'':'s'}</div></span><span class="chev">⌄</span></summary><div class="units">${cards}</div></details>`;
  }).join(''):'<div class="empty">No hay unidades que coincidan con la búsqueda.</div>';
 }
 window.toggleUnit=id=>{selected[id]=selected[id]?0:1;renderUnits();calc()};
@@ -199,7 +271,7 @@ function rates(){
 function farmCapacity(){let f=175;if(activeTech.has('farm1'))f+=75;if(activeTech.has('farm2'))f+=125;if(activeTech.has('farm3'))f+=175;const r=CIV_RULES[$('civ').value]||{};if(r.farmLife)f*=r.farmLife;return f}
 function calc(){
  if(!raw)return;const g=rates(),speed=Math.max(.1,Number($('trainMult').value)||1),need={food:0,wood:0,gold:0,stone:0},names=[];
- for(const [id,n0] of Object.entries(selected)){const n=Number(n0)||0,u=units.find(x=>x.id===Number(id));if(n<=0||!u)continue;const ps=n*speed/u.time;need.food+=u.food*ps;need.wood+=u.wood*ps;need.gold+=u.gold*ps;need.stone+=u.stone*ps;names.push(u.name+' ×'+n)}
+ for(const [id,n0] of Object.entries(selected)){const n=Number(n0)||0,u=units.find(x=>x.id===Number(id));if(n<=0||!u)continue;const ps=n*speed*productionMultiplier(u)/u.time;need.food+=u.food*ps;need.wood+=u.wood*ps;need.gold+=u.gold*ps;need.stone+=u.stone*ps;names.push(displayUnitName(u)+' ×'+n)}
  if($('foodSource').value==='farm'&&need.food>0){const rule=CIV_RULES[$('civ').value]||{},farmCost=60*(rule.farmCost||1);need.wood+=(need.food/farmCapacity())*farmCost}
  $('outFood').textContent=(need.food/g.food).toFixed(1);$('outWood').textContent=(need.wood/g.wood).toFixed(1);$('outGold').textContent=(need.gold/g.gold).toFixed(1);$('outStone').textContent=(need.stone/g.stone).toFixed(1);$('resultSummary').textContent=names.length?names.join(' · '):'Selecciona una unidad para empezar.'
 }
