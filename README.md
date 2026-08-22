@@ -1,84 +1,126 @@
-# Calc_aoe2 - ChatGPT Code Generator Integration
+# Calc_aoe2 - ChatGPT Automatic Code Generator
 
-Welcome to Calc_aoe2! This repository is integrated with ChatGPT to generate code directly into your project.
+Welcome! This repository is fully integrated with ChatGPT to **automatically generate and commit code** directly to your repo.
 
-## 🚀 Getting Started
+## 🚀 Quick Start (No Setup Needed!)
 
-### 1. Set Up Your OpenAI API Key
+### Method 1: GitHub Web Interface (Easiest) ⭐
 
-1. Get your API key from [OpenAI Platform](https://platform.openai.com/api-keys)
-2. Copy `.env.example` to `.env`:
-   ```bash
-   cp .env.example .env
-   ```
-3. Add your API key to `.env`:
-   ```
-   OPENAI_API_KEY=sk-your-key-here
-   ```
+1. Go to your repository: https://github.com/guilleguille/Calc_aoe2
+2. Click **Actions** tab
+3. Click **"Generate Code with ChatGPT"** workflow on the left
+4. Click **"Run workflow"** button
+5. Fill in:
+   - **Prompt**: Describe what code you want (e.g., "Create a function to calculate unit armor bonuses")
+   - **Filename**: Where to save (e.g., `src/calculator.py`)
+   - **Language**: Select the programming language
+6. Click **"Run workflow"**
+7. Wait 30-60 seconds ✅
+8. **Code is generated AND automatically committed!**
 
-### 2. Install Dependencies
+### Method 2: Command Line (Local)
 
 ```bash
+# First time setup
+git clone https://github.com/guilleguille/Calc_aoe2.git
+cd Calc_aoe2
+cp .env.example .env
+# Edit .env and add your OpenAI API key
 pip install -r requirements.txt
-```
 
-### 3. Generate Code with ChatGPT
-
-Use the `generate_code.py` script to create code:
-
-```bash
-# Generate and display code
-python generate_code.py "Create a function to calculate unit armor bonuses in Age of Empires 2"
-
-# Generate and save to a file
-python generate_code.py "Create a function to calculate unit armor bonuses" src/armor_calculator.py
-
-# Generate JavaScript code
-python generate_code.py "Create a React component for unit selection" src/UnitSelector.jsx javascript
-
-# Generate Java code
-python generate_code.py "Create a class for managing unit statistics" src/UnitStats.java java
+# Generate and auto-commit code
+python auto_generate.py "Create a unit bonus calculator" src/calculator.py python
 ```
 
 ## 📋 Usage Examples
 
-### Python Code Generation
+### Via GitHub Actions (Recommended)
+1. Go to Actions → "Generate Code with ChatGPT" → Run workflow
+2. Input examples:
+   - **Prompt**: "Create a class to manage AOE2 civilization bonuses with methods for calculating attack and armor"
+   - **Filename**: `src/civilization.py`
+   - **Language**: `python`
+
+### Via Command Line
 ```bash
-python generate_code.py "Create a class to manage AOE2 civilization bonuses" src/civilization.py
+# Python
+python auto_generate.py "Create a damage calculator function" src/damage.py python
+
+# JavaScript
+python auto_generate.py "Create a React component for unit stats display" src/UnitStats.jsx javascript
+
+# Java
+python auto_generate.py "Create a class for managing resource tracking" src/Resources.java java
 ```
 
-### JavaScript/React Code Generation
-```bash
-python generate_code.py "Create a React hook for managing selected units" src/useUnitSelection.js javascript
-```
+## 🔐 Security & API Key Setup
 
-### Save Generated Code Directly
-The script will automatically:
-- Create directories if they don't exist
-- Format the code properly
-- Add documentation and comments
-- Save it to the specified file
+### Add Your OpenAI API Key to GitHub Secrets:
 
-## 🔧 How It Works
+1. Go to: **Settings** → **Secrets and variables** → **Actions**
+2. Click **"New repository secret"**
+3. Name: `OPENAI_API_KEY`
+4. Value: Your API key from https://platform.openai.com/api-keys
+5. Click **Add secret**
 
-1. You provide a prompt describing what code you want
-2. ChatGPT generates well-documented, production-ready code
-3. The code is automatically saved to your repository
-4. You can review, edit, and commit the generated code
+That's it! The workflow will use it automatically.
 
-## 💡 Tips
+## ✨ What Happens Automatically
 
-- Be specific in your prompts for better results
-- Specify the file path to automatically organize your code
-- Mention the programming language for best results
-- Generated code includes docstrings and comments
+When you trigger code generation:
+1. ✅ ChatGPT generates well-documented, production-ready code
+2. ✅ Code is automatically saved to your specified file
+3. ✅ File is staged and committed to git
+4. ✅ Changes are pushed to GitHub
+5. ✅ You see the commit in your repository history
 
-## ⚠️ Important
+**No manual commits needed!**
 
-- Never commit `.env` file with your API key
-- Keep your `OPENAI_API_KEY` secure and private
-- Review generated code before committing to ensure quality
+## 📝 Features
 
-## 📝 License
+- 🤖 ChatGPT-4 generates clean, documented code
+- 📦 Automatic Git commit and push
+- 🎯 Multiple language support (Python, JavaScript, Java, C++, Go, Rust, etc.)
+- 📂 Automatically creates directories
+- 💾 Includes docstrings and comments
+- 🔒 Secure API key management
 
-(Add your license here)
+## 🆘 Troubleshooting
+
+**"No changes to commit"** message?
+- This means ChatGPT generated the same code or nothing was created
+- Check your prompt and try again with more details
+
+**GitHub Actions failing?**
+- Go to Actions tab → Click the failed run → See error details
+- Make sure `OPENAI_API_KEY` secret is set in Settings
+
+**Want to generate locally instead?**
+- Use `python auto_generate.py` command
+- Make sure `.env` file has your API key
+
+## 📊 Supported Languages
+
+- Python
+- JavaScript / TypeScript
+- Java
+- C++
+- C#
+- Go
+- Rust
+- (and many more!)
+
+## 🎯 Pro Tips
+
+1. **Be specific in your prompts** - "Create a function that calculates unit bonus damage based on civilization and attack type" works better than just "calculator"
+2. **Use clear filenames** - `src/unit_calculator.py` is better than `test.py`
+3. **Review generated code** - Always check what was created before using it in production
+4. **Iterate** - If you want changes, generate again with a new prompt
+
+## 📞 Need Help?
+
+Check the generated code in your commits! Everything is tracked in your Git history.
+
+---
+
+**That's it! You're all set. Start generating code now! 🎉**
