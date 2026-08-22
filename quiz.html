@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a1017">
+<title>AoE2 DE · Quiz de civilizaciones</title>
+<style>
+:root{--bg:#080d13;--panel:#111a25;--line:#2f4157;--text:#f6f2e9;--muted:#a3b0c1;--gold:#e5b44f;--green:#4fb978;--red:#d45f58}
+*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 50% -10%,#2b4058 0,#101923 36%,#080d13 72%)}button{font:inherit;touch-action:manipulation}.app{max-width:850px;margin:auto;padding:12px 11px 40px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.back{display:inline-flex;text-decoration:none;color:#dbe5ef;border:1px solid #3a4e66;background:#0b141ee8;border-radius:11px;padding:9px 11px;font-size:11px;font-weight:750}.score{display:flex;gap:6px}.stat{border:1px solid #34485f;background:#0a131c;border-radius:999px;padding:6px 9px;font-size:9px;color:#c8d2dd}.stat b{color:#fff}
+.hero,.quizCard{border:1px solid var(--line);background:linear-gradient(145deg,#142130,#0b141e);border-radius:19px;box-shadow:0 12px 35px #0005}.hero{padding:14px;margin-bottom:10px}.hero h1{margin:0;font-size:21px}.hero p{margin:5px 0 0;font-size:10px;color:var(--muted)}
+.quizCard{padding:14px}.progress{display:flex;align-items:center;gap:8px;margin-bottom:12px}.bar{height:6px;flex:1;border-radius:999px;background:#0a1119;overflow:hidden}.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#b78934,#e5b44f);transition:.25s}.qnum{font-size:9px;color:var(--muted)}
+.question{border:1px solid #3a4e66;background:#0a121b;border-radius:15px;padding:17px;margin-bottom:13px;text-align:center}.questionLabel{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#d5b871;margin-bottom:8px}.bonus{font-size:18px;line-height:1.35;font-weight:800}.hint{margin-top:7px;color:var(--muted);font-size:9px}
+.options{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.civBtn{position:relative;border:1px solid #33475d;background:linear-gradient(145deg,#111d2a,#09121b);border-radius:14px;padding:8px 5px 7px;color:#e8edf3;min-height:108px;cursor:pointer;transition:.12s}.civBtn:active{transform:scale(.98)}.civBtn img{width:62px;height:62px;object-fit:contain;display:block;margin:0 auto 5px;filter:drop-shadow(0 4px 7px #0008)}.civBtn span{display:block;font-size:9px;line-height:1.15}.civBtn.wrong{border-color:#e46a62;background:#321716;animation:shake .2s}.civBtn.correct{border-color:#67d190;background:#12331f;box-shadow:inset 0 0 0 1px #67d19044}.civBtn.disabled{pointer-events:none;opacity:.6}.civBtn.correct.disabled{opacity:1}.feedback{text-align:center;min-height:42px;margin-top:11px}.feedback strong{display:block;font-size:13px}.feedback span{display:block;margin-top:3px;font-size:9px;color:var(--muted)}.feedback.good strong{color:#86dda5}.feedback.bad strong{color:#f08a82}.nextRow{display:flex;justify-content:center;margin-top:10px}.next{display:none;border:1px solid #d7ab50;background:linear-gradient(#d6a94d,#8e6425);color:#171109;border-radius:12px;padding:11px 18px;font-weight:850;font-size:11px;cursor:pointer;box-shadow:0 7px 20px #0005}.next.show{display:block}.loading,.fatal{padding:30px 12px;text-align:center;color:var(--muted);font-size:11px}.actions{display:flex;justify-content:center;margin-top:14px}.ghost{border:1px solid #34485f;background:#0a131c;color:#cfd9e4;border-radius:10px;padding:8px 11px;font-size:9px}.smallprint{text-align:center;color:#69788b;font-size:8px;margin-top:13px;line-height:1.4}
+@keyframes shake{0%,100%{transform:translateX(0)}35%{transform:translateX(-3px)}70%{transform:translateX(3px)}}
+@media(max-width:620px){.options{grid-template-columns:repeat(4,1fr);gap:6px}.civBtn{min-height:95px;padding:6px 3px}.civBtn img{width:50px;height:50px}.civBtn span{font-size:8px}.bonus{font-size:16px}}
+@media(max-width:400px){.options{grid-template-columns:repeat(4,1fr)}.civBtn img{width:44px;height:44px}.civBtn{min-height:88px}}
+</style>
+</head>
+<body>
+<main class="app">
+  <div class="top">
+    <a class="back" href="index.html">← Menú</a>
+    <div class="score"><span class="stat">Aciertos <b id="hits">0</b></span><span class="stat">Racha <b id="streak">0</b></span></div>
+  </div>
+  <section class="hero"><h1>Quiz de civilizaciones</h1><p>¿A qué civilización pertenece esta bonificación?</p></section>
+  <section class="quizCard">
+    <div id="loading" class="loading">Preparando preguntas desde los datos del árbol tecnológico…</div>
+    <div id="game" hidden>
+      <div class="progress"><div class="bar"><i id="progress"></i></div><span class="qnum" id="qnum">Pregunta 1</span></div>
+      <div class="question"><div class="questionLabel">Bonificación</div><div class="bonus" id="bonus"></div><div class="hint">Elige uno de los 8 escudos.</div></div>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="nextRow"><button class="next" id="nextBtn">Siguiente pregunta →</button></div>
+      <div class="actions"><button class="ghost" id="resetBtn">Reiniciar puntuación</button></div>
+    </div>
+  </section>
+  <div class="smallprint">Las preguntas se generan automáticamente a partir de las bonificaciones incluidas en los datos españoles del árbol tecnológico.</div>
+</main>
+<script>
+const CDN='https://cdn.jsdelivr.net/gh/SiegeEngineers/aoe2techtree@master/';
+const RAW='https://raw.githubusercontent.com/SiegeEngineers/aoe2techtree/master/';
+const $=id=>document.getElementById(id);
+let strings={},civs={},pool=[],current=null,hits=0,streak=0,questionNo=0,locked=false;
+const CIV_ES={Armenians:'Armenios',Aztecs:'Aztecas',Bengalis:'Bengalíes',Berbers:'Bereberes',Bohemians:'Bohemios',Britons:'Britones',Bulgarians:'Búlgaros',Burgundians:'Borgoñones',Byzantines:'Bizantinos',Celts:'Celtas',Chinese:'Chinos',Cumans:'Cumanos',Dravidians:'Drávidas',Ethiopians:'Etíopes',Franks:'Francos',Georgians:'Georgianos',Goths:'Godos',Gurjaras:'Gurjaras',Hindustanis:'Hindustanes',Huns:'Hunos',Incas:'Incas',Italians:'Italianos',Japanese:'Japoneses',Khmer:'Jemer',Koreans:'Coreanos',Lithuanians:'Lituanos',Magyars:'Magiares',Malay:'Malayos',Malians:'Malíes',Mayans:'Mayas',Mongols:'Mongoles',Persians:'Persas',Poles:'Polacos',Portuguese:'Portugueses',Romans:'Romanos',Saracens:'Sarracenos',Sicilians:'Sicilianos',Slavs:'Eslavos',Spanish:'Españoles',Tatars:'Tártaros',Teutons:'Teutones',Turks:'Turcos',Vietnamese:'Vietnamitas',Vikings:'Vikingos',Burmese:'Birmanos',Portuguese:'Portugueses'};
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function cleanHTML(v){
+  let x=String(v??'').replace(/<br\s*\/?>/gi,'\\n').replace(/\\n/g,'\\n').replace(/<b>|<\/b>/gi,'').replace(/<i>|<\/i>/gi,'');
+  const d=document.createElement('div');
+  d.innerHTML=x;
+  return (d.textContent||'').replace(/\u00a0/g,' ').trim();
+}
+function splitBonusLines(v){
+  const text=cleanHTML(v);
+  const raw=text.split(/\\n+/).map(s=>s.trim()).filter(Boolean);
+  const out=[];
+  let section='';
+  for(let line of raw){
+    if(/^civilizaci[oó]n/i.test(line)) continue;
+    if(/^unidad(?:es)? [uú]nica/i.test(line)){section='unit';continue;}
+    if(/^tecnolog[ií]as? [uú]nica/i.test(line)){section='tech';continue;}
+    if(/^bonificaci[oó]n de equipo/i.test(line)){section='team';continue;}
+    if(section==='unit'||section==='tech') continue;
+    line=line.replace(/^[•·\-–—]\s*/,'').trim();
+    if(!line || line.length<12) continue;
+    out.push({text:line,team:section==='team'});
+  }
+  return out;
+}
+async function getJSON(a,b){try{const r=await fetch(a,{cache:'no-store'});if(!r.ok)throw Error();return await r.json()}catch(e){const r=await fetch(b,{cache:'no-store'});if(!r.ok)throw e;return await r.json()}}
+function civImage(civ){return CDN+'img/Civs/'+String(civ).toLowerCase()+'.png'}
+function imgFail(img,civ){if(img.dataset.retry!=='1'){img.dataset.retry='1';img.src=RAW+'img/Civs/'+String(civ).toLowerCase()+'.png'}else{img.style.visibility='hidden'}}
+window.quizImgFail=img=>imgFail(img,img.dataset.civ);
+function buildPool(){const temporary=[];for(const [civ,data] of Object.entries(civs)){const id=data&&data.help_string_id;const txt=strings[String(id)];if(!txt)continue;for(const item of splitBonusLines(txt))temporary.push({civ,text:item.text,team:item.team});}
+  // Evita preguntas cuyo texto exacto aparece para varias civilizaciones.
+  const owners=new Map();for(const q of temporary){const k=q.text.toLowerCase().replace(/\s+/g,' ');if(!owners.has(k))owners.set(k,new Set());owners.get(k).add(q.civ)}
+  pool=temporary.filter(q=>owners.get(q.text.toLowerCase().replace(/\s+/g,' ')).size===1);
+}
+function sample(arr,n){const copy=[...arr];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]]}return copy.slice(0,n)}
+function newQuestion(){if(pool.length<1)return;locked=false;questionNo++;$('feedback').className='feedback';$('feedback').innerHTML='';$('nextBtn').className='next';current=pool[Math.floor(Math.random()*pool.length)];const civKeys=Object.keys(civs).filter(c=>c!==current.civ);const distractors=sample(civKeys,7);const options=sample([current.civ,...distractors],8);$('bonus').textContent=(current.team?'Bonificación de equipo: ':'')+current.text;$('qnum').textContent='Pregunta '+questionNo;$('progress').style.width=((questionNo%10||10)*10)+'%';$('options').innerHTML=options.map(c=>`<button class="civBtn" data-civ="${esc(c)}"><img src="${civImage(c)}" data-civ="${esc(c)}" data-retry="0" onerror="quizImgFail(this)" alt=""><span>${esc(CIV_ES[c]||c)}</span></button>`).join('')}
+function answer(btn){if(locked)return;const chosen=btn.dataset.civ;if(chosen===current.civ){locked=true;btn.classList.add('correct');document.querySelectorAll('.civBtn').forEach(b=>{if(b!==btn)b.classList.add('disabled')});hits++;streak++;$('hits').textContent=hits;$('streak').textContent=streak;$('feedback').className='feedback good';$('feedback').innerHTML=`<strong>¡Correcto!</strong><span>${esc(CIV_ES[current.civ]||current.civ)}</span>`;$('nextBtn').classList.add('show')}else{btn.classList.add('wrong','disabled');streak=0;$('streak').textContent=streak;$('feedback').className='feedback bad';$('feedback').innerHTML='<strong>No es esa.</strong><span>Prueba otra civilización.</span>'}}
+$('options').addEventListener('click',e=>{const b=e.target.closest('.civBtn');if(b)answer(b)});$('nextBtn').addEventListener('click',newQuestion);$('resetBtn').addEventListener('click',()=>{hits=0;streak=0;questionNo=0;$('hits').textContent='0';$('streak').textContent='0';newQuestion()});
+(async function init(){try{const [data,es]=await Promise.all([getJSON(CDN+'data/data.json',RAW+'data/data.json'),getJSON(CDN+'data/locales/es/strings.json',RAW+'data/locales/es/strings.json')]);civs=data.civs||{};strings=es||{};buildPool();if(!pool.length)throw Error('No se pudieron extraer bonificaciones');$('loading').hidden=true;$('game').hidden=false;newQuestion()}catch(e){console.error(e);$('loading').className='fatal';$('loading').textContent='No se pudo preparar el quiz. Recarga la página dentro de unos segundos.'}})();
+</script>
+</body>
+</html>

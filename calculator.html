@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a1017">
+<title>AoE2 DE · Calculadora de economía militar</title>
+<style>
+:root{--bg:#080d13;--panel:#111a25;--line:#2a3a4e;--text:#f5f1e8;--muted:#9caabc;--gold:#e5b44f;--good:#73cb91;--bad:#d56c5e}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 50% -15%,#26394d 0,#101923 30%,#080d13 68%)}
+button,select,input{font:inherit}button{touch-action:manipulation}
+.app{max-width:1080px;margin:auto;padding:12px 11px 150px}
+.hero,.card{border:1px solid var(--line);background:linear-gradient(#131e2a,#0e1720);box-shadow:0 9px 28px #0004}
+.hero{border-radius:20px;padding:15px;margin-bottom:9px}.card{border-radius:18px;padding:12px;margin:9px 0}
+.brand{display:flex;gap:11px;align-items:center}.logo{width:49px;height:49px;flex:none;border-radius:15px;display:grid;place-items:center;font-size:26px;background:linear-gradient(145deg,#e2b75d,#65461b)}
+h1{font-size:21px;line-height:1.12;margin:0}.subtitle{font-size:11px;color:var(--muted);margin-top:4px}
+.head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}.head strong{font-size:14px}.micro{font-size:9px;color:var(--muted)}
+.status{display:flex;gap:5px;align-items:center;font-size:9px;color:var(--muted)}.dot{width:7px;height:7px;border-radius:50%;background:#bc8940}.dot.ok{background:var(--good)}.dot.bad{background:var(--bad)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.field label{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+select,input[type=number],input[type=search]{width:100%;padding:10px;border:1px solid #36495f;border-radius:11px;background:#091119;color:#fff;outline:none}
+.bonusBox{margin-top:9px;padding:10px;border:1px solid #3b4c60;border-radius:12px;background:#0a131c}.bonusTitle{color:#f2d89d;font-size:10px;font-weight:700;margin-bottom:7px}
+.bonusLine{position:relative;padding-left:12px;margin:6px 0;color:#becad7;font-size:9px;line-height:1.45}.bonusLine:before{content:"•";position:absolute;left:0;color:#e4b759}
+.applied{margin-top:8px;padding-top:7px;border-top:1px solid #263749;color:#8fd3a3;font-size:9px;line-height:1.4}
+.toolbar{display:grid;grid-template-columns:1fr auto;gap:7px}.clear{border:1px solid var(--line);background:#0a131c;color:#dbe4ef;border-radius:10px;padding:0 12px}
+.treeGroup{margin-top:9px;border:1px solid #2c3d51;border-radius:15px;overflow:hidden;background:#0b141e}
+.treeGroup>summary{list-style:none;cursor:pointer;padding:10px 11px;display:grid;grid-template-columns:54px 1fr auto;gap:9px;align-items:center}.treeGroup>summary::-webkit-details-marker{display:none}
+.groupPic{width:54px;height:54px;border-radius:11px;overflow:hidden;border:1px solid #41546b;background:#1d2a39;display:grid;place-items:center}.groupPic img,.pic img,.techPic img{width:100%;height:100%;object-fit:cover;display:block}
+.groupName{font-size:13px;font-weight:750;line-height:1.2}.groupMeta{margin-top:3px;font-size:9px;color:var(--muted)}.chev{font-size:18px;color:#b8c5d2;transition:.15s}.treeGroup[open] .chev{transform:rotate(180deg)}
+.techList,.units{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 8px 8px}
+.tech{display:grid;grid-template-columns:58px 1fr;gap:9px;align-items:center;padding:8px;border:1px solid #34465b;border-radius:13px;background:linear-gradient(145deg,#111c29,#09121b);color:#d2dce7;text-align:left;cursor:pointer}
+.tech.on{border-color:var(--gold);background:linear-gradient(145deg,#3b301d,#161b1d);box-shadow:inset 0 0 0 1px #e6b65245}
+.techPic{width:58px;height:58px;border-radius:11px;overflow:hidden;border:1px solid #41546b;background:#1d2a39}.techText b{display:block;font-size:11px;line-height:1.2}.techText span{display:block;margin-top:4px;color:var(--muted);font-size:8px;line-height:1.3}
+.unit{position:relative;display:grid;grid-template-columns:68px 1fr;gap:8px;min-height:105px;padding:8px;border:1px solid #2d3e52;border-radius:14px;background:linear-gradient(145deg,#111c29,#09121b);cursor:pointer}
+.unit.active{border-color:var(--gold);background:linear-gradient(145deg,#211d14,#101821);box-shadow:inset 0 0 0 1px #e6b65245}
+.pic{width:68px;height:68px;border-radius:12px;overflow:hidden;border:1px solid #41546b;background:#1d2a39;display:grid;place-items:center}.fallback{padding:4px;text-align:center;color:#dfe7ef;font-size:12px;font-weight:800;line-height:1.1}
+.unit h3{display:block;width:100%;margin:2px 0 6px;font-size:12px;line-height:1.25;white-space:normal;overflow:visible;text-overflow:clip;word-break:normal}
+.tags{display:flex;gap:4px;flex-wrap:wrap}.tag{display:inline-flex;align-items:center;gap:3px;padding:3px 5px;border-radius:6px;background:#202e3e;font-size:8px}.meta{margin-top:5px;padding-right:90px;color:var(--muted);font-size:8px;line-height:1.25}
+.qty{position:absolute;right:7px;bottom:7px;display:flex;align-items:center;gap:3px;padding:2px;border-radius:9px;background:#071019e8}.qty button{width:27px;height:27px;padding:0;border:0;border-radius:7px;background:#2b3e54;color:#fff;font-size:17px}.qty b{min-width:24px;text-align:center;font-size:11px}
+.ore{position:relative;display:inline-block;width:12px;height:10px;vertical-align:-1px;filter:drop-shadow(0 1px 1px #0008)}.ore:before{content:"";position:absolute;inset:0;background:linear-gradient(145deg,#ffe783,#e7aa24 62%,#875414);clip-path:polygon(15% 18%,65% 0,100% 37%,78% 100%,25% 88%,0 53%)}.ore.big{width:17px;height:14px}
+.result{position:fixed;z-index:30;left:50%;bottom:7px;transform:translateX(-50%);width:min(1058px,calc(100% - 18px));padding:9px;border:1px solid #49617c;border-radius:18px;background:linear-gradient(#152231f7,#09121af8);box-shadow:0 14px 48px #000d;backdrop-filter:blur(14px)}
+.resources{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.resource{text-align:center;background:#071019;border-radius:11px;padding:7px}.resource b{display:block;font-size:21px;line-height:1.05}.resource span{display:flex;justify-content:center;align-items:center;gap:4px;margin-top:2px;color:var(--muted);font-size:8px}
+.resultSummary{margin:6px 2px 0;color:#c4cfdb;font-size:9px;white-space:normal;line-height:1.35}.note{margin-top:8px;color:var(--muted);font-size:9px;line-height:1.48}.loading,.error,.empty{padding:24px 10px;text-align:center;color:var(--muted);font-size:10px}.advanced{margin-top:9px}.advanced>summary{color:#d7e1ec;font-size:10px;cursor:pointer}
+@media(max-width:800px){.units,.techList{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.grid,.units,.techList{grid-template-columns:1fr}.unit{grid-template-columns:64px 1fr;min-height:99px}.pic{width:64px;height:64px}.resource b{font-size:19px}.treeGroup>summary{grid-template-columns:50px 1fr auto}.groupPic{width:50px;height:50px}}
+
+.menuBack{position:sticky;top:8px;z-index:60;display:inline-flex;align-items:center;gap:7px;margin:0 0 10px;padding:9px 12px;border:1px solid #40536a;border-radius:12px;background:#0b141ee8;color:#f5f1e8;text-decoration:none;font-size:12px;font-weight:700;backdrop-filter:blur(10px);box-shadow:0 7px 20px #0005}.menuBack:active{transform:scale(.98)}
+</style>
+</head>
+<body>
+<div style="max-width:1080px;margin:auto;padding:10px 11px 0"><a class="menuBack" href="index.html">← Menú principal</a></div>
+<main class="app">
+<section class="hero"><div class="brand"><div class="logo">⚔</div><div><h1>Calculadora de economía · AoE2 DE</h1><div class="subtitle">Calcula los aldeanos necesarios para mantener tu producción militar.</div></div></div></section>
+
+<section class="card">
+<div class="head"><strong>1 · Civilización y fuente de comida</strong><div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Cargando…</span></div></div>
+<div class="grid">
+<div class="field"><label>Civilización</label><select id="civ"><option>Cargando…</option></select></div>
+<div class="field"><label>Fuente principal de comida</label><select id="foodSource"><option value="farm">🌾 Granjas</option><option value="sheep">🐑 Ovejas</option><option value="boar">🐗 Caza</option><option value="berries">🫐 Bayas</option><option value="fish">🐟 Pesca costera</option></select></div>
+</div>
+<div class="bonusBox"><div class="bonusTitle">Bonos de civilización</div><div id="civBonusText">—</div><div id="appliedBonus" class="applied"></div></div>
+</section>
+
+<section class="card">
+<div class="head"><strong>2 · Tecnologías económicas</strong><span class="micro">Desplegadas por edificio</span></div>
+<div id="techBuildings"><div class="loading">Cargando tecnologías…</div></div>
+<div class="note">Toca una tecnología para indicar que ya está investigada.</div>
+</section>
+
+<section class="card">
+<div class="head"><strong>3 · Producción militar</strong><span id="unitCount" class="micro">—</span></div>
+<div class="toolbar"><input id="search" type="search" placeholder="Buscar una unidad…"><button id="clearBtn" class="clear">Limpiar</button></div>
+<div id="militaryBuildings"><div class="loading">Cargando edificios y unidades…</div></div>
+</section>
+
+<section class="card"><strong>Cómo funciona</strong><div class="note">Abre un edificio y pulsa <b>+</b>. Por ejemplo, <b>Caballero ×2</b> significa dos establos produciendo Caballeros de forma continua.</div>
+<details class="advanced"><summary>Ajustes manuales avanzados</summary><div class="grid" style="margin-top:9px">
+<div class="field"><label>Multiplicador comida</label><input id="foodMult" type="number" min=".1" step=".01" value="1"></div>
+<div class="field"><label>Multiplicador madera</label><input id="woodMult" type="number" min=".1" step=".01" value="1"></div>
+<div class="field"><label>Multiplicador oro</label><input id="goldMult" type="number" min=".1" step=".01" value="1"></div>
+<div class="field"><label>Multiplicador piedra</label><input id="stoneMult" type="number" min=".1" step=".01" value="1"></div>
+<div class="field"><label>Velocidad de producción</label><input id="trainMult" type="number" min=".1" step=".01" value="1"></div>
+<div class="field"><label>Eficiencia práctica</label><input id="efficiency" type="number" min=".5" max="1" step=".01" value=".95"></div>
+</div></details></section>
+</main>
+
+<aside class="result"><div class="resources">
+<div class="resource"><b id="outFood">0.0</b><span>🍖 COMIDA</span></div>
+<div class="resource"><b id="outWood">0.0</b><span>🪵 MADERA</span></div>
+<div class="resource"><b id="outGold">0.0</b><span><i class="ore big"></i> ORO</span></div>
+<div class="resource"><b id="outStone">0.0</b><span>🪨 PIEDRA</span></div>
+</div><div id="resultSummary" class="resultSummary">Selecciona una unidad para empezar.</div></aside>
+
+<script>
+const CDN='https://cdn.jsdelivr.net/gh/SiegeEngineers/aoe2techtree@master/';
+const RAW='https://raw.githubusercontent.com/SiegeEngineers/aoe2techtree/master/';
+const $=id=>document.getElementById(id);
+let raw=null,strings={},civs={},units=[],techs=[],selected={},activeTech=new Set(),tree=null;
+const unitBuildingMap=new Map();
+const cache=new Map();
+
+const CIV_ES={Armenians:'Armenios',Aztecs:'Aztecas',Bengalis:'Bengalíes',Berbers:'Bereberes',Bohemians:'Bohemios',Britons:'Britones',Bulgarians:'Búlgaros',Burgundians:'Borgoñones',Byzantines:'Bizantinos',Celts:'Celtas',Chinese:'Chinos',Cumans:'Cumanos',Dravidians:'Drávidas',Ethiopians:'Etíopes',Franks:'Francos',Georgians:'Georgianos',Goths:'Godos',Gurjaras:'Gurjaras',Hindustanis:'Hindustanes',Huns:'Hunos',Incas:'Incas',Italians:'Italianos',Japanese:'Japoneses',Khmer:'Jemer',Koreans:'Coreanos',Lithuanians:'Lituanos',Magyars:'Magiares',Malay:'Malayos',Malians:'Malíes',Mayans:'Mayas',Mongols:'Mongoles',Persians:'Persas',Poles:'Polacos',Portuguese:'Portugueses',Romans:'Romanos',Saracens:'Sarracenos',Sicilians:'Sicilianos',Slavs:'Eslavos',Spanish:'Españoles',Tatars:'Tártaros',Teutons:'Teutones',Turks:'Turcos',Vietnamese:'Vietnamitas',Vikings:'Vikingos'};
+
+const CIV_RULES={Britons:{sheep:1.25,label:'Pastores +25 %.'},Celts:{wood:1.15,label:'Leñadores +15 %.'},Franks:{berries:1.15,label:'Recolectores de bayas +15 %.'},Koreans:{stone:1.20,label:'Mineros de piedra +20 %.'},Mongols:{boar:1.40,label:'Cazadores +40 %.'},Slavs:{farm:1.10,label:'Granjeros +10 %.'},Turks:{gold:1.20,label:'Mineros de oro +20 %.'},Romans:{all:1.05,label:'Aldeanos +5 %.'},Mayans:{farmLife:1.15,label:'Recursos duran +15 %.'},Teutons:{farmCost:.60,label:'Granjas 40 % más baratas.'}};
+
+// Bonificaciones que modifican directamente la velocidad de creación.
+// Un multiplicador 1.15 significa que el edificio produce un 15 % más rápido.
+const PRODUCTION_RULES={
+  Aztecs:{all:1.15,label:'Unidades militares: +15 % velocidad de entrenamiento.'},
+  Britons:{building:{87:1.10},label:'Galerías de tiro con arco: +10 % velocidad de trabajo.'},
+  Goths:{building:{12:1.20},label:'Cuarteles: +20 % velocidad de trabajo.'},
+  Huns:{building:{101:1.20},label:'Establos: +20 % velocidad de trabajo.'},
+  Celts:{building:{49:1.20},label:'Talleres de maquinaria de asedio: +20 % velocidad de trabajo.'},
+  Turks:{gunpowder:1.25,label:'Unidades de pólvora: +25 % velocidad de entrenamiento.'},
+  Gurjaras:{camelElephant:1.25,label:'Unidades de camello y elefante: +25 % velocidad de entrenamiento.'}
+};
+
+const ECON=[
+ ['wheelbarrow',['wheelbarrow'],'Carretilla','Mejora movilidad y capacidad de carga.'],
+ ['handcart',['hand cart','handcart'],'Carro de mano','Mejora movilidad y capacidad de carga.'],
+ ['wood1',['double-bit axe','double bit axe'],'Hacha de doble filo','Leñadores +20 %.'],
+ ['wood2',['bow saw'],'Sierra de arco','Leñadores +20 %.'],
+ ['wood3',['two-man saw','two man saw'],'Sierra de dos manos','Leñadores +10 %.'],
+ ['gold1',['gold mining'],'Minería de oro','Mineros de oro +15 %.'],
+ ['gold2',['gold shaft mining'],'Pozo de oro','Mineros de oro +15 %.'],
+ ['stone1',['stone mining'],'Minería de piedra','Mineros de piedra +15 %.'],
+ ['stone2',['stone shaft mining'],'Pozo de piedra','Mineros de piedra +15 %.'],
+ ['farm1',['horse collar'],'Collera','Granjas +75 alimento.'],
+ ['farm2',['heavy plow','heavy plough'],'Arado pesado','Granjas +125 alimento.'],
+ ['farm3',['crop rotation'],'Rotación de cultivos','Granjas +175 alimento.']
+];
+
+function strip(v){const d=document.createElement('div');d.innerHTML=String(v??'').replace(/<br\s*\/?>/gi,' ');return (d.textContent||'').replace(/\s+/g,' ').trim()}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function norm(v){return strip(v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[-_]+/g,' ').replace(/\s+/g,' ').trim()}
+function parseCost(c){if(Array.isArray(c)){const o={Food:0,Wood:0,Gold:0,Stone:0};c.forEach(x=>{if(x&&x.Type in o)o[x.Type]+=Number(x.Amount)||0});return o}return{Food:Number(c&&c.Food)||0,Wood:Number(c&&c.Wood)||0,Gold:Number(c&&c.Gold)||0,Stone:Number(c&&c.Stone)||0}}
+async function getJSON(a,b){try{const r=await fetch(a,{cache:'no-store'});if(!r.ok)throw Error();return await r.json()}catch(e){const r=await fetch(b,{cache:'no-store'});if(!r.ok)throw e;return await r.json()}}
+function fullName(obj,fallback){const s=strings[String(obj&&obj.LanguageNameId)];return strip(s)||fallback}
+
+function expandGameName(name){
+  return String(name||'')
+    .replace(/\bArq\.\s*/gi,'Arquero ')
+    .replace(/\bArq\s+/gi,'Arquero ')
+    .replace(/\bde E\.\b/gi,'de élite')
+    .replace(/\bde E\.$/gi,'de élite')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+function displayUnitName(u){
+  const node=maps.Unit.get(Number(u.id))?.node;
+  if(node){
+    const sid=node.name_string_id;
+    const treeLabel=strip(strings[String(sid)]);
+    if(treeLabel && !/^[A-Z0-9_-]{3,}$/.test(treeLabel)){
+      return expandGameName(treeLabel);
+    }
+    const helpId=node.help_string_id;
+    const help=String(strings[String(helpId)]||'');
+    const match=help.match(/<b>([^<]+)<\/b>/i);
+    if(match && match[1]) return expandGameName(strip(match[1]));
+  }
+  if(u.name && !/^[A-Z0-9_-]{3,}$/.test(u.name)) return expandGameName(u.name);
+  const common={ARCHR:'Arquero',XBOWM:'Ballestero',CARCH:'Arquero a caballo',HXBOW:'Arquero a caballo pesado',CVRCH:'Arquero a caballo pesado'};
+  return common[String(u.internal||'').toUpperCase()]||expandGameName(u.name||u.internal||('Unidad '+u.id));
+}
+
+function isGunpowderUnit(u){
+  const n=norm(displayUnitName(u)+' '+(u.internal||''));
+  return /artillero manual|cañon de asedio|galeon artillado|jenizaro|conquistador|organ gun|cañon de salvas|obús|houfnice|bombard/.test(n);
+}
+
+function isCamelOrElephant(u){
+  const n=norm(displayUnitName(u)+' '+(u.internal||''));
+  return /camello|elefante/.test(n);
+}
+
+function productionMultiplier(u){
+  const rule=PRODUCTION_RULES[$('civ').value];
+  if(!rule) return 1;
+  let m=rule.all||1;
+  const buildingId=unitBuildingMap.get(Number(u.id));
+  if(rule.building && buildingId!=null && rule.building[buildingId]) m*=rule.building[buildingId];
+  if(rule.gunpowder && isGunpowderUnit(u)) m*=rule.gunpowder;
+  if(rule.camelElephant && isCamelOrElephant(u)) m*=rule.camelElephant;
+  return m;
+}
+function cellIds(grid,type){const out=[],re=new RegExp(type+'_(\\d+)_','g');(function walk(v){if(typeof v==='string'){let m;while((m=re.exec(v))!==null)out.push(Number(m[1]));re.lastIndex=0}else if(v&&typeof v==='object')Object.values(v).forEach(walk)})(grid);return [...new Set(out)]}
+function mapsFromTree(t){const m={Unit:new Map(),Tech:new Map(),Building:new Map()};const seen=new WeakSet();(function walk(v){if(!v||typeof v!=='object'||seen.has(v))return;seen.add(v);if(!Array.isArray(v)&&m[v.use_type]){const id=Number(v.node_id),pic=Number(v.picture_index);if(Number.isFinite(id))m[v.use_type].set(id,{node:v,picture:Number.isFinite(pic)?pic:null})}Object.values(v).forEach(walk)})(t);return m}
+let maps={Unit:new Map(),Tech:new Map(),Building:new Map()};
+async function loadTree(civ){if(cache.has(civ)){tree=cache.get(civ);maps=mapsFromTree(tree);return}const p='data/trees/'+encodeURIComponent(String(civ).toUpperCase())+'.json';tree=await getJSON(CDN+p,RAW+p);cache.set(civ,tree);maps=mapsFromTree(tree)}
+function img(type,pic,alt){if(pic==null)return `<div class="fallback">${esc(alt)}</div>`;return `<img loading="lazy" src="${CDN}img/${type}/${pic}.png" data-type="${type}" data-pic="${pic}" data-try="0" alt="${esc(alt)}" onerror="imgFail(this)">`}
+window.imgFail=i=>{if(i.dataset.try==='0'){i.dataset.try='1';i.src=RAW+'img/'+i.dataset.type+'/'+i.dataset.pic+'.png'}else i.parentElement.innerHTML='<div class="fallback">'+esc(i.alt||'?')+'</div>'};
+
+function bonusLines(){
+ const c=civs[$('civ').value],v=c&&strings[String(c.help_string_id)];
+ if(!v)return [];
+ let x=String(v).replace(/<br\s*\/?>/gi,'\n').replace(/\\n/g,'\n').replace(/<\/p>/gi,'\n').replace(/<\/li>/gi,'\n');
+ const d=document.createElement('div');d.innerHTML=x;
+ return (d.textContent||'').split('\n').map(s=>s.trim()).filter(Boolean);
+}
+function renderBonus(){
+ const lines=bonusLines();
+ $('civBonusText').innerHTML=(lines.length?lines:['No hay descripción disponible.']).map(x=>`<div class="bonusLine">${esc(x)}</div>`).join('');
+ const parts=[];
+ const eco=CIV_RULES[$('civ').value];
+ const prod=PRODUCTION_RULES[$('civ').value];
+ if(eco?.label) parts.push(eco.label);
+ if(prod?.label) parts.push(prod.label);
+ $('appliedBonus').innerHTML=parts.length
+   ? '<b>Efectos aplicados al cálculo:</b><br>'+parts.map(x=>'• '+esc(x)).join('<br>')
+   : 'Los bonos que no modifican directamente la recolección o la velocidad de producción sostenida no alteran el resultado.';
+}
+function econList(){
+ const available=new Set((civs[$('civ').value]&&civs[$('civ').value].Tech||[]).map(Number)),out=[];
+ for(const t of techs){
+   if(!available.has(t.id)||!maps.Tech.has(t.id))continue;
+   const hay=norm(t.internal+' '+t.name);
+   const a=ECON.find(e=>e[1].some(p=>hay.includes(norm(p))));
+   if(a)out.push({...t,key:a[0],display:t.name||a[2],desc:a[3],picture:maps.Tech.get(t.id).picture});
+ }
+ return out;
+}
+function renderTechs(){
+ const econ=econList(),byId=new Map(econ.map(x=>[x.id,x])),groups=[];
+ for(const b of (tree&&tree.buildings||[])){
+   const items=cellIds(b.grid,'Tech').map(id=>byId.get(id)).filter(Boolean);
+   if(items.length)groups.push({b,items});
+ }
+ const used=new Set(groups.flatMap(g=>g.items.map(x=>x.id))),extra=econ.filter(x=>!used.has(x.id));
+ if(extra.length)groups.push({b:null,items:extra});
+ const valid=new Set(econ.map(x=>x.key));[...activeTech].forEach(k=>{if(!valid.has(k))activeTech.delete(k)});
+ $('techBuildings').innerHTML=groups.length?groups.map(g=>{
+   let name='Otras tecnologías económicas',pic=null;
+   if(g.b){name=strip(strings[String(g.b.name_string_id)])||strip(g.b.name)||'Edificio económico';pic=Number.isFinite(Number(g.b.picture_index))?Number(g.b.picture_index):null}
+   const cards=g.items.map(t=>`<button class="tech ${activeTech.has(t.key)?'on':''}" data-tech="${t.key}"><span class="techPic">${img('Tech',t.picture,t.display)}</span><span class="techText"><b>${esc(t.display)}</b><span>${esc(t.desc)}</span></span></button>`).join('');
+   return `<details class="treeGroup"><summary><span class="groupPic">${g.b?img('Building',pic,name):'<div class="fallback">⚙</div>'}</span><span><div class="groupName">${esc(name)}</div><div class="groupMeta">${g.items.length} mejora${g.items.length===1?'':'s'} económica${g.items.length===1?'':'s'}</div></span><span class="chev">⌄</span></summary><div class="techList">${cards}</div></details>`;
+ }).join(''):'<div class="empty">No se encontraron tecnologías económicas disponibles.</div>';
+}
+function availableUnits(){return new Set((civs[$('civ').value]&&civs[$('civ').value].Unit||[]).map(Number))}
+function gold(v){return `<span class="tag"><i class="ore"></i>${v}</span>`}
+function renderUnits(){
+ const openKeys=new Set([...document.querySelectorAll('#militaryBuildings details[open]')].map(d=>d.dataset.key).filter(Boolean));
+ const available=availableUnits(),q=norm($('search').value),groups=[];
+ unitBuildingMap.clear();
+ for(const b of (tree&&tree.buildings||[])){
+   const buildingId=Number(b.building_id ?? b.node_id);
+   let items=cellIds(b.grid,'Unit').filter(id=>available.has(id)).map(id=>units.find(u=>u.id===id)).filter(Boolean);
+   items.forEach(u=>unitBuildingMap.set(Number(u.id),buildingId));
+   if(q)items=items.filter(u=>norm(displayUnitName(u)+' '+u.internal).includes(q));
+   if(items.length)groups.push({b,items,key:String(buildingId)});
+ }
+ $('unitCount').textContent=groups.reduce((n,g)=>n+g.items.length,0)+' unidades';
+ $('militaryBuildings').innerHTML=groups.length?groups.map(g=>{
+   const b=g.b,name=strip(strings[String(b.name_string_id)])||strip(b.name)||'Edificio de producción',pic=Number.isFinite(Number(b.picture_index))?Number(b.picture_index):null;
+   const cards=g.items.map(u=>{const n=selected[u.id]||0,p=maps.Unit.get(u.id)?.picture,display=displayUnitName(u);return `<article class="unit ${n?'active':''}" onclick="toggleUnit(${u.id})"><div class="pic">${img('Unit',p,display)}</div><div><h3>${esc(display)}</h3><div class="tags">${u.food?`<span class="tag">🍖 ${u.food}</span>`:''}${u.wood?`<span class="tag">🪵 ${u.wood}</span>`:''}${u.gold?gold(u.gold):''}${u.stone?`<span class="tag">🪨 ${u.stone}</span>`:''}</div><div class="meta">${u.time}s base${productionMultiplier(u)>1?' · '+Math.round((productionMultiplier(u)-1)*100)+' % más rápido':''}</div></div><div class="qty" onclick="event.stopPropagation()"><button onclick="changeQty(${u.id},-1)">−</button><b>${n}</b><button onclick="changeQty(${u.id},1)">+</button></div></article>`}).join('');
+   return `<details class="treeGroup" data-key="${g.key}" ${(q||openKeys.has(g.key))?'open':''}><summary><span class="groupPic">${img('Building',pic,name)}</span><span><div class="groupName">${esc(name)}</div><div class="groupMeta">${g.items.length} unidad${g.items.length===1?'':'es'} disponible${g.items.length===1?'':'s'}</div></span><span class="chev">⌄</span></summary><div class="units">${cards}</div></details>`;
+ }).join(''):'<div class="empty">No hay unidades que coincidan con la búsqueda.</div>';
+}
+window.toggleUnit=id=>{selected[id]=selected[id]?0:1;renderUnits();calc()};
+window.changeQty=(id,d)=>{selected[id]=Math.max(0,(selected[id]||0)+d);renderUnits();calc()};
+
+function rates(){
+ const source=$('foodSource').value,r={food:{farm:.32,sheep:.34,boar:.41,berries:.31,fish:.43}[source]||.32,wood:.39,gold:.38,stone:.36};
+ if(activeTech.has('wood1'))r.wood*=1.20;if(activeTech.has('wood2'))r.wood*=1.20;if(activeTech.has('wood3'))r.wood*=1.10;
+ if(activeTech.has('gold1'))r.gold*=1.15;if(activeTech.has('gold2'))r.gold*=1.15;if(activeTech.has('stone1'))r.stone*=1.15;if(activeTech.has('stone2'))r.stone*=1.15;
+ if(activeTech.has('wheelbarrow')){r.food*=source==='farm'?1.10:1.03;r.wood*=1.03;r.gold*=1.02;r.stone*=1.02}
+ if(activeTech.has('handcart')){r.food*=source==='farm'?1.05:1.03;r.wood*=1.03;r.gold*=1.03;r.stone*=1.03}
+ const rule=CIV_RULES[$('civ').value]||{};if(rule.all)Object.keys(r).forEach(k=>r[k]*=rule.all);if(rule[source])r.food*=rule[source];if(rule.wood)r.wood*=rule.wood;if(rule.gold)r.gold*=rule.gold;if(rule.stone)r.stone*=rule.stone;
+ r.food*=Number($('foodMult').value)||1;r.wood*=Number($('woodMult').value)||1;r.gold*=Number($('goldMult').value)||1;r.stone*=Number($('stoneMult').value)||1;
+ const eff=Math.min(1,Math.max(.5,Number($('efficiency').value)||.95));Object.keys(r).forEach(k=>r[k]*=eff);return r
+}
+function farmCapacity(){let f=175;if(activeTech.has('farm1'))f+=75;if(activeTech.has('farm2'))f+=125;if(activeTech.has('farm3'))f+=175;const r=CIV_RULES[$('civ').value]||{};if(r.farmLife)f*=r.farmLife;return f}
+function calc(){
+ if(!raw)return;const g=rates(),speed=Math.max(.1,Number($('trainMult').value)||1),need={food:0,wood:0,gold:0,stone:0},names=[];
+ for(const [id,n0] of Object.entries(selected)){const n=Number(n0)||0,u=units.find(x=>x.id===Number(id));if(n<=0||!u)continue;const ps=n*speed*productionMultiplier(u)/u.time;need.food+=u.food*ps;need.wood+=u.wood*ps;need.gold+=u.gold*ps;need.stone+=u.stone*ps;names.push(displayUnitName(u)+' ×'+n)}
+ if($('foodSource').value==='farm'&&need.food>0){const rule=CIV_RULES[$('civ').value]||{},farmCost=60*(rule.farmCost||1);need.wood+=(need.food/farmCapacity())*farmCost}
+ $('outFood').textContent=(need.food/g.food).toFixed(1);$('outWood').textContent=(need.wood/g.wood).toFixed(1);$('outGold').textContent=(need.gold/g.gold).toFixed(1);$('outStone').textContent=(need.stone/g.stone).toFixed(1);$('resultSummary').textContent=names.length?names.join(' · '):'Selecciona una unidad para empezar.'
+}
+async function changeCiv(){try{$('statusDot').className='dot';$('statusText').textContent='Cargando árbol…';selected={};activeTech=new Set();await loadTree($('civ').value);renderBonus();renderTechs();renderUnits();calc();$('statusDot').className='dot ok';$('statusText').textContent='Listo'}catch(e){console.error(e);$('statusDot').className='dot bad';$('statusText').textContent='Error de árbol';$('militaryBuildings').innerHTML='<div class="error">No se pudo cargar el árbol de esta civilización.</div>'}}
+$('techBuildings').addEventListener('click',e=>{const b=e.target.closest('[data-tech]');if(!b)return;const k=b.dataset.tech;activeTech.has(k)?activeTech.delete(k):activeTech.add(k);renderTechs();calc()});
+$('search').addEventListener('input',renderUnits);$('clearBtn').addEventListener('click',()=>{selected={};$('search').value='';renderUnits();calc()});$('civ').addEventListener('change',changeCiv);$('foodSource').addEventListener('change',calc);
+['foodMult','woodMult','goldMult','stoneMult','trainMult','efficiency'].forEach(id=>$(id).addEventListener('input',calc));
+
+async function load(){
+ try{
+   $('statusText').textContent='Cargando datos…';
+   raw=await getJSON(CDN+'data/data.json',RAW+'data/data.json');
+   strings=await getJSON(CDN+'data/locales/es/strings.json',RAW+'data/locales/es/strings.json');
+   civs=raw.civs||{};
+   units=Object.entries(raw.data?.Unit||{}).map(([id,u])=>{const c=parseCost(u.Cost),fallback=u.internal_name||('Unidad '+id);return{id:Number(id),internal:fallback,name:fullName(u,fallback),food:c.Food,wood:c.Wood,gold:c.Gold,stone:c.Stone,time:Number(u.TrainTime)||0}}).filter(u=>u.time>0&&(u.food||u.wood||u.gold||u.stone));
+   techs=Object.entries(raw.data?.Tech||{}).map(([id,t])=>{const fallback=t.internal_name||('Tecnología '+id);return{id:Number(id),internal:fallback,name:fullName(t,fallback)}});
+   $('civ').innerHTML=Object.keys(civs).sort((a,b)=>(CIV_ES[a]||a).localeCompare(CIV_ES[b]||b,'es')).map(c=>`<option value="${esc(c)}">${esc(CIV_ES[c]||c)}</option>`).join('');
+   if(civs.Britons)$('civ').value='Britons';
+   await changeCiv();
+ }catch(e){
+   console.error(e);$('statusDot').className='dot bad';$('statusText').textContent='Error al cargar datos';
+   $('militaryBuildings').innerHTML='<div class="error">No se pudieron cargar los datos principales.</div>';
+   $('techBuildings').innerHTML='<div class="error">No se pudieron cargar las tecnologías.</div>';
+ }
+}
+load();
+</script>
+</body>
+</html>
