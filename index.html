@@ -3,937 +3,196 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#091019">
-
-<title>AoE2 DE · Calculadora de economía</title>
-
+<meta name="theme-color" content="#0a1017">
+<title>AoE2 DE · Calculadora de economía militar</title>
 <style>
-
 :root{
-  --bg:#080d13;
-  --panel:#111a25;
-  --line:#2b3b50;
-  --text:#f6f2e8;
-  --muted:#9caabd;
-  --gold:#e6b652;
+  --bg:#080d13;--panel:#111a25;--line:#2a3a4e;--text:#f5f1e8;--muted:#9caabc;
+  --gold:#e5b44f;--gold2:#6d4b18;--good:#73cb91;--danger:#d56c5e
 }
-
-*{
-  box-sizing:border-box;
-}
-
+*{box-sizing:border-box}
+html{background:var(--bg)}
 body{
-  margin:0;
-  color:var(--text);
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-
-  background:
-    radial-gradient(
-      circle at 50% -15%,
-      #27394e 0,
-      #101923 30%,
-      #080d13 65%
-    );
+  margin:0;color:var(--text);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:radial-gradient(circle at 50% -15%,#26394d 0,#101923 30%,#080d13 68%)
 }
-
-button,
-select,
-input{
-  font:inherit;
-}
-
-button{
-  touch-action:manipulation;
-}
-
-.app{
-  max-width:1050px;
-  margin:auto;
-  padding:
-    12px
-    11px
-    138px;
-}
-
-
-/* CABECERA */
+button,select,input{font:inherit}
+button{touch-action:manipulation}
+.app{max-width:1080px;margin:auto;padding:12px 11px 150px}
 
 .hero{
-  position:relative;
-  overflow:hidden;
-
-  border:
-    1px solid
-    #35485e;
-
-  border-radius:20px;
-
-  padding:15px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #182638,
-      #0b141e
-    );
-
-  box-shadow:
-    0 14px 40px
-    #0006;
+  border:1px solid #35495f;border-radius:20px;padding:15px;
+  background:linear-gradient(135deg,#192739,#0b141e);
+  box-shadow:0 14px 40px #0006
 }
-
-.hero::after{
-  content:"";
-
-  position:absolute;
-
-  width:220px;
-  height:220px;
-
-  right:-110px;
-  top:-120px;
-
-  border-radius:50%;
-
-  background:
-    #e3b25212;
-}
-
-.brand{
-  position:relative;
-  z-index:2;
-
-  display:flex;
-  align-items:center;
-  gap:11px;
-}
-
+.brand{display:flex;gap:11px;align-items:center}
 .logo{
-  width:50px;
-  height:50px;
-
-  flex:none;
-
-  display:grid;
-  place-items:center;
-
-  border-radius:15px;
-
-  font-size:27px;
-
-  background:
-    linear-gradient(
-      145deg,
-      #e0b154,
-      #624319
-    );
-
-  box-shadow:
-    inset 0 1px
-    #fff6;
+  width:49px;height:49px;border-radius:15px;display:grid;place-items:center;
+  font-size:26px;background:linear-gradient(145deg,#e2b75d,#65461b)
 }
-
-h1{
-  margin:0;
-
-  font-size:21px;
-  line-height:1.12;
+h1{font-size:21px;line-height:1.12;margin:0}
+.subtitle{font-size:11px;color:var(--muted);margin-top:4px}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
+.badge{
+  font-size:9px;padding:5px 8px;border:1px solid #34485e;
+  border-radius:999px;background:#08121bbb;color:#cbd6e2
 }
-
-.subtitle{
-  margin-top:4px;
-
-  color:var(--muted);
-
-  font-size:11px;
-}
-
-.hero-badges{
-  position:relative;
-  z-index:2;
-
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-
-  margin-top:12px;
-}
-
-.hero-badge{
-  padding:
-    5px
-    8px;
-
-  border:
-    1px solid
-    #33475d;
-
-  border-radius:999px;
-
-  background:
-    #08121bbb;
-
-  color:#c9d4df;
-
-  font-size:9px;
-}
-
-
-/* TARJETAS */
 
 .card{
-  margin:
-    9px
-    0;
-
-  padding:12px;
-
-  border:
-    1px solid
-    var(--line);
-
-  border-radius:18px;
-
-  background:
-    linear-gradient(
-      180deg,
-      #131e2a,
-      #0e1720
-    );
-
-  box-shadow:
-    0 10px 30px
-    #0004;
+  margin:9px 0;padding:12px;border:1px solid var(--line);border-radius:18px;
+  background:linear-gradient(#131e2a,#0e1720);box-shadow:0 9px 28px #0004
 }
-
-.section-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:8px;
-
-  margin-bottom:9px;
+.head{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:8px;margin-bottom:9px
 }
+.head strong{font-size:14px}
+.micro{font-size:9px;color:var(--muted)}
 
-.section-head strong{
-  font-size:14px;
-}
+.status{display:flex;gap:5px;align-items:center;font-size:9px;color:var(--muted)}
+.dot{width:7px;height:7px;border-radius:50%;background:#bc8940}
+.dot.ok{background:var(--good)}
+.dot.bad{background:var(--danger)}
 
-.small{
-  color:var(--muted);
-  font-size:9px;
-}
-
-
-/* ESTADO */
-
-.status{
-  display:flex;
-  align-items:center;
-  gap:5px;
-
-  color:var(--muted);
-
-  font-size:9px;
-}
-
-.dot{
-  width:7px;
-  height:7px;
-
-  border-radius:50%;
-
-  background:#be8c42;
-}
-
-.dot.ok{
-  background:#6fd296;
-}
-
-.dot.error{
-  background:#d46959;
-}
-
-
-/* FORMULARIOS */
-
-.grid{
-  display:grid;
-
-  grid-template-columns:
-    repeat(
-      2,
-      1fr
-    );
-
-  gap:9px;
-}
-
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
 .field label{
-  display:block;
-
-  margin-bottom:5px;
-
-  color:var(--muted);
-
-  font-size:9px;
-
-  text-transform:uppercase;
-
-  letter-spacing:.08em;
+  display:block;color:var(--muted);font-size:9px;text-transform:uppercase;
+  letter-spacing:.08em;margin-bottom:5px
 }
-
-select,
-input{
-  width:100%;
-
-  padding:10px;
-
-  border:
-    1px solid
-    #35485e;
-
-  border-radius:11px;
-
-  outline:none;
-
-  background:#091119;
-
-  color:white;
+select,input[type="number"],input[type="search"]{
+  width:100%;padding:10px;border:1px solid #36495f;border-radius:11px;
+  background:#091119;color:white;outline:none
 }
+select:focus,input:focus{border-color:#789abc}
 
-select:focus,
-input:focus{
-  border-color:#7799bd;
+.bonusBox{
+  margin-top:9px;padding:9px;border:1px solid #3b4c60;
+  border-radius:12px;background:#0a131c
 }
+.bonusTitle{font-size:10px;color:#f2d89d;margin-bottom:5px}
+.bonusText{font-size:9px;line-height:1.5;color:#b9c6d4}
+.applied{margin-top:6px;color:#8fd3a3;font-size:9px}
 
-
-/* BUSCADOR */
-
-.toolbar{
-  display:grid;
-
-  grid-template-columns:
-    1fr
-    auto;
-
-  gap:7px;
-
-  margin-bottom:8px;
+.techGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.tech{
+  border:1px solid #34465b;background:#0a131c;color:#d2dce7;
+  border-radius:11px;padding:9px;text-align:left
 }
+.tech.on{border-color:var(--gold);background:#4a381d;color:#ffe2a4}
+.tech b{display:block;font-size:10px}
+.tech span{display:block;font-size:8px;color:var(--muted);margin-top:2px}
+.tech.on span{color:#e6d5ae}
 
+.toolbar{display:grid;grid-template-columns:1fr auto;gap:7px}
 .clear{
-  padding:
-    0
-    12px;
-
-  border:
-    1px solid
-    var(--line);
-
-  border-radius:10px;
-
-  background:#0a131c;
-
-  color:#dce5ef;
+  border:1px solid var(--line);background:#0a131c;color:#dbe4ef;
+  border-radius:10px;padding:0 12px
 }
 
-
-/* CATEGORÍAS */
-
-.tabs{
-  display:flex;
-
-  gap:6px;
-
-  overflow-x:auto;
-
-  padding-bottom:3px;
-
-  scrollbar-width:none;
+.group{
+  margin-top:8px;border:1px solid #2c3d51;border-radius:14px;
+  overflow:hidden;background:#0b141e
 }
-
-.tabs::-webkit-scrollbar{
-  display:none;
+.group summary{
+  list-style:none;cursor:pointer;padding:11px 12px;font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:space-between
 }
-
-.tab,
-.chip{
-  padding:
-    7px
-    10px;
-
-  border:
-    1px solid
-    var(--line);
-
-  border-radius:10px;
-
-  background:#0a131c;
-
-  color:#ccd6e2;
-
-  white-space:nowrap;
-
-  font-size:10px;
-}
-
-.tab.on,
-.chip.on{
-  border-color:var(--gold);
-
-  background:#49371d;
-
-  color:#ffe1a0;
-
-  box-shadow:
-    inset 0 0 0 1px
-    #e6b65225;
-}
-
-
-/* MEJORAS */
-
-.upgrades{
-  display:flex;
-  flex-wrap:wrap;
-  gap:5px;
-}
-
-details{
-  margin-top:9px;
-}
-
-summary{
-  color:#d5e0eb;
-
-  font-size:10px;
-
-  cursor:pointer;
-}
-
-.advanced{
-  padding-top:9px;
-}
-
-
-/* UNIDADES */
+.group summary::-webkit-details-marker{display:none}
+.group summary:after{content:"⌄";color:#b6c4d2;font-size:16px}
+.group[open] summary:after{content:"⌃"}
+.groupMeta{font-size:9px;color:var(--muted);font-weight:500}
 
 .units{
-  display:grid;
-
-  grid-template-columns:
-    repeat(
-      3,
-      1fr
-    );
-
-  gap:9px;
-
-  margin-top:8px;
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:8px;padding:0 8px 8px
 }
-
 .unit{
-  position:relative;
-
-  min-height:105px;
-
-  display:grid;
-
-  grid-template-columns:
-    72px
-    1fr;
-
-  gap:9px;
-
-  padding:8px;
-
-  overflow:hidden;
-
-  border:
-    1px solid
-    #2d3e52;
-
-  border-radius:15px;
-
-  background:
-    linear-gradient(
-      145deg,
-      #111c29,
-      #09121b
-    );
-
-  cursor:pointer;
-
-  transition:
-    .12s ease;
+  position:relative;display:grid;grid-template-columns:68px 1fr;
+  gap:8px;min-height:101px;padding:8px;border:1px solid #2d3e52;
+  border-radius:14px;background:linear-gradient(145deg,#111c29,#09121b);
+  cursor:pointer
 }
-
-.unit:active{
-  transform:
-    scale(.985);
-}
-
 .unit.active{
-  border-color:
-    var(--gold);
-
-  background:
-    linear-gradient(
-      145deg,
-      #211d14,
-      #101821
-    );
-
-  box-shadow:
-    inset
-    0
-    0
-    0
-    1px
-    #e6b65250;
+  border-color:var(--gold);
+  background:linear-gradient(145deg,#211d14,#101821);
+  box-shadow:inset 0 0 0 1px #e6b65245
 }
-
-
-/* IMAGEN REAL */
-
-.unit-image{
-  width:72px;
-  height:72px;
-
-  overflow:hidden;
-
-  display:grid;
-  place-items:center;
-
-  border:
-    1px solid
-    #40536a;
-
-  border-radius:12px;
-
-  background:
-    linear-gradient(
-      145deg,
-      #26374a,
-      #101821
-    );
+.pic{
+  width:68px;height:68px;border-radius:12px;overflow:hidden;
+  border:1px solid #41546b;background:#1d2a39;
+  display:grid;place-items:center
 }
+.pic img{width:100%;height:100%;display:block;object-fit:cover}
+.fallback{font-size:17px;font-weight:800;color:#dfe7ef}
 
-.unit-image img{
-  width:100%;
-  height:100%;
-
-  display:block;
-
-  object-fit:cover;
-}
-
-.fallback{
-  width:100%;
-  height:100%;
-
-  display:grid;
-  place-items:center;
-
-  background:
-    linear-gradient(
-      145deg,
-      #26374a,
-      #101821
-    );
-
-  color:#e0e7ef;
-
-  font-size:18px;
-
-  font-weight:800;
-}
-
-
-/* TEXTO UNIDAD */
-
-.unit-content{
-  min-width:0;
-}
-
-.unit h3{
-  margin:
-    2px
-    0
-    6px;
-
-  font-size:12px;
-  line-height:1.15;
-}
-
-.tags{
-  display:flex;
-
-  flex-wrap:wrap;
-
-  gap:4px;
-}
-
+.unit h3{font-size:12px;line-height:1.18;margin:2px 0 6px}
+.tags{display:flex;gap:4px;flex-wrap:wrap}
 .tag{
-  display:inline-flex;
-
-  align-items:center;
-
-  gap:3px;
-
-  padding:
-    3px
-    5px;
-
-  border-radius:6px;
-
-  background:#202e3e;
-
-  color:#e4eaf1;
-
-  font-size:8px;
+  display:inline-flex;align-items:center;gap:3px;font-size:8px;
+  padding:3px 5px;border-radius:6px;background:#202e3e
 }
-
-.meta{
-  margin-top:5px;
-
-  color:var(--muted);
-
-  font-size:8px;
-}
-
-
-/* MINERAL DE ORO */
-
-.ore{
-  position:relative;
-
-  display:inline-block;
-
-  width:12px;
-  height:10px;
-
-  vertical-align:-1px;
-
-  filter:
-    drop-shadow(
-      0
-      1px
-      1px
-      #0008
-    );
-}
-
-.ore::before{
-  content:"";
-
-  position:absolute;
-
-  inset:0;
-
-  background:
-    linear-gradient(
-      145deg,
-      #ffe782,
-      #e5a923 62%,
-      #855313
-    );
-
-  clip-path:
-    polygon(
-      15% 18%,
-      66% 0,
-      100% 37%,
-      77% 100%,
-      24% 88%,
-      0 53%
-    );
-}
-
-.ore.big{
-  width:17px;
-  height:14px;
-}
-
-
-/* + / - */
+.meta{margin-top:5px;font-size:8px;color:var(--muted)}
 
 .qty{
-  position:absolute;
-
-  right:7px;
-  bottom:7px;
-
-  display:flex;
-  align-items:center;
-  gap:3px;
-
-  padding:2px;
-
-  border-radius:9px;
-
-  background:#071019e8;
+  position:absolute;right:7px;bottom:7px;display:flex;align-items:center;
+  gap:3px;padding:2px;border-radius:9px;background:#071019e8
 }
-
 .qty button{
-  width:27px;
-  height:27px;
-
-  padding:0;
-
-  border:0;
-
-  border-radius:7px;
-
-  background:#2b3e54;
-
-  color:white;
-
-  font-size:17px;
+  width:27px;height:27px;padding:0;border:0;border-radius:7px;
+  background:#2b3e54;color:white;font-size:17px
 }
+.qty b{min-width:24px;text-align:center;font-size:11px}
 
-.qty b{
-  min-width:24px;
-
-  text-align:center;
-
-  font-size:11px;
+.ore{
+  position:relative;display:inline-block;width:12px;height:10px;
+  vertical-align:-1px;filter:drop-shadow(0 1px 1px #0008)
 }
-
-
-/* UNIDADES SELECCIONADAS */
-
-.selected{
-  display:flex;
-
-  gap:5px;
-
-  overflow-x:auto;
-
-  margin-top:8px;
-
-  scrollbar-width:none;
+.ore:before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(145deg,#ffe783,#e7aa24 62%,#875414);
+  clip-path:polygon(15% 18%,65% 0,100% 37%,78% 100%,25% 88%,0 53%)
 }
+.ore.big{width:17px;height:14px}
 
-.selected:empty{
-  display:none;
-}
-
-.selected::-webkit-scrollbar{
-  display:none;
-}
-
-.selected-pill{
-  padding:
-    5px
-    8px;
-
-  border:
-    1px solid
-    #574525;
-
-  border-radius:999px;
-
-  background:#2b2418;
-
-  color:#f0d89d;
-
-  white-space:nowrap;
-
-  font-size:9px;
-}
-
-
-/* MENSAJES */
-
-.loading,
-.error,
-.empty{
-  grid-column:
-    1 / -1;
-
-  padding:
-    28px
-    12px;
-
-  border:
-    1px dashed
-    #35485f;
-
-  border-radius:13px;
-
-  text-align:center;
-
-  color:var(--muted);
-
-  font-size:11px;
-}
-
-.note{
-  margin-top:8px;
-
-  color:var(--muted);
-
-  font-size:9px;
-  line-height:1.5;
-}
-
-
-/* RESULTADO */
+.note{font-size:9px;line-height:1.48;color:var(--muted);margin-top:8px}
 
 .result{
-  position:fixed;
-
-  z-index:30;
-
-  left:50%;
-  bottom:7px;
-
-  transform:
-    translateX(-50%);
-
-  width:
-    min(
-      1028px,
-      calc(100% - 18px)
-    );
-
-  padding:9px;
-
-  border:
-    1px solid
-    #49617c;
-
-  border-radius:18px;
-
-  background:
-    linear-gradient(
-      180deg,
-      #152231f7,
-      #09121af8
-    );
-
-  box-shadow:
-    0 14px 48px
-    #000d;
-
-  backdrop-filter:
-    blur(14px);
+  position:fixed;z-index:30;left:50%;bottom:7px;transform:translateX(-50%);
+  width:min(1058px,calc(100% - 18px));padding:9px;
+  border:1px solid #49617c;border-radius:18px;
+  background:linear-gradient(#152231f7,#09121af8);
+  box-shadow:0 14px 48px #000d;backdrop-filter:blur(14px)
 }
-
-.resources{
-  display:grid;
-
-  grid-template-columns:
-    repeat(
-      4,
-      1fr
-    );
-
-  gap:6px;
-}
-
-.resource{
-  padding:7px;
-
-  border-radius:11px;
-
-  background:#071019;
-
-  text-align:center;
-}
-
-.resource b{
-  display:block;
-
-  font-size:21px;
-  line-height:1.05;
-}
-
+.resources{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.resource{text-align:center;background:#071019;border-radius:11px;padding:7px}
+.resource b{display:block;font-size:21px;line-height:1.05}
 .resource span{
-  display:flex;
-
-  justify-content:center;
-  align-items:center;
-
-  gap:4px;
-
-  margin-top:2px;
-
-  color:var(--muted);
-
-  font-size:8px;
+  display:flex;justify-content:center;align-items:center;gap:4px;
+  margin-top:2px;color:var(--muted);font-size:8px
 }
-
-.result-summary{
-  margin:
-    6px
-    2px
-    0;
-
-  overflow:hidden;
-
-  color:#c4cfdb;
-
-  font-size:9px;
-
-  white-space:nowrap;
-
-  text-overflow:ellipsis;
+.summary{
+  font-size:9px;color:#c4cfdb;margin:6px 2px 0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
-
-
-/* MÓVIL */
-
-@media(max-width:780px){
-
-  .units{
-    grid-template-columns:
-      repeat(
-        2,
-        1fr
-      );
-  }
-
+.loading,.error,.empty{
+  grid-column:1/-1;padding:24px 10px;text-align:center;
+  color:var(--muted);font-size:10px
 }
+details.advanced{margin-top:9px}
+details.advanced>summary{font-size:10px;color:#d7e1ec;cursor:pointer}
 
+@media(max-width:800px){
+  .units{grid-template-columns:repeat(2,1fr)}
+  .techGrid{grid-template-columns:repeat(2,1fr)}
+}
 @media(max-width:520px){
-
-  .grid{
-    grid-template-columns:
-      1fr;
-  }
-
-  .units{
-    grid-template-columns:
-      1fr;
-  }
-
-  .unit{
-    min-height:96px;
-
-    grid-template-columns:
-      66px
-      1fr;
-  }
-
-  .unit-image{
-    width:66px;
-    height:66px;
-  }
-
-  .resource b{
-    font-size:19px;
-  }
-
+  .grid,.units,.techGrid{grid-template-columns:1fr}
+  .unit{grid-template-columns:64px 1fr;min-height:95px}
+  .pic{width:64px;height:64px}
+  .resource b{font-size:19px}
+  .hero{padding:13px}
 }
-
 </style>
 </head>
 
@@ -941,363 +200,132 @@ summary{
 
 <main class="app">
 
-
 <section class="hero">
-
   <div class="brand">
-
-    <div class="logo">
-      ⚔
-    </div>
-
+    <div class="logo">⚔</div>
     <div>
-
-      <h1>
-        Calculadora de economía · AoE2 DE
-      </h1>
-
+      <h1>Calculadora de economía · AoE2 DE</h1>
       <div class="subtitle">
-        Averigua cuántos aldeanos necesitas para producir tus unidades sin parar.
+        Civilización + tecnologías + líneas de producción = aldeanos necesarios.
       </div>
-
     </div>
-
   </div>
 
-
-  <div class="hero-badges">
-
-    <span class="hero-badge">
-      📱 Diseñada para móvil
-    </span>
-
-    <span class="hero-badge">
-      🇪🇸 Español
-    </span>
-
-    <span class="hero-badge">
-      🎯 Producción continua
-    </span>
-
-    <span class="hero-badge">
-      🖼️ Iconos reales
-    </span>
-
+  <div class="badges">
+    <span class="badge">🇪🇸 Nombres completos</span>
+    <span class="badge">📱 Móvil</span>
+    <span class="badge">🖼️ Iconos reales</span>
+    <span class="badge">⚙️ Bonos automáticos</span>
   </div>
-
 </section>
-
 
 
 <section class="card">
 
-  <div class="section-head">
-
-    <strong>
-      Tu configuración
-    </strong>
+  <div class="head">
+    <strong>1 · Civilización y comida</strong>
 
     <div class="status">
-
-      <span
-        id="statusDot"
-        class="dot"
-      ></span>
-
-      <span id="statusText">
-        Cargando…
-      </span>
-
+      <span id="statusDot" class="dot"></span>
+      <span id="statusText">Cargando…</span>
     </div>
-
   </div>
-
 
   <div class="grid">
 
     <div class="field">
-
-      <label>
-        Civilización
-      </label>
-
+      <label>Civilización</label>
       <select id="civ">
-
-        <option>
-          Cargando civilizaciones…
-        </option>
-
+        <option>Cargando…</option>
       </select>
-
     </div>
 
-
     <div class="field">
-
-      <label>
-        Fuente principal de comida
-      </label>
+      <label>Fuente principal de comida</label>
 
       <select id="foodSource">
-
-        <option value="farm">
-          🌾 Granjas
-        </option>
-
-        <option value="sheep">
-          🐑 Ovejas
-        </option>
-
-        <option value="boar">
-          🐗 Caza
-        </option>
-
-        <option value="berries">
-          🫐 Bayas
-        </option>
-
-        <option value="fish">
-          🐟 Pesca costera
-        </option>
-
+        <option value="farm">🌾 Granjas</option>
+        <option value="sheep">🐑 Ovejas</option>
+        <option value="boar">🐗 Caza</option>
+        <option value="berries">🫐 Bayas</option>
+        <option value="fish">🐟 Pesca costera</option>
       </select>
-
     </div>
 
   </div>
 
+  <div class="bonusBox">
 
-  <details>
-
-    <summary>
-      Mejoras económicas y ajustes avanzados
-    </summary>
-
-    <div class="advanced">
-
-
-      <div
-        class="upgrades"
-        id="upgrades"
-      >
-
-        <button
-          class="chip"
-          data-up="wheelbarrow"
-        >
-          Carretilla
-        </button>
-
-        <button
-          class="chip"
-          data-up="handcart"
-        >
-          Carro de mano
-        </button>
-
-        <button
-          class="chip"
-          data-up="wood1"
-        >
-          Hacha de doble filo
-        </button>
-
-        <button
-          class="chip"
-          data-up="wood2"
-        >
-          Sierra de arco
-        </button>
-
-        <button
-          class="chip"
-          data-up="wood3"
-        >
-          Sierra de dos manos
-        </button>
-
-        <button
-          class="chip"
-          data-up="gold1"
-        >
-          Minería de oro
-        </button>
-
-        <button
-          class="chip"
-          data-up="gold2"
-        >
-          Pozo de oro
-        </button>
-
-        <button
-          class="chip"
-          data-up="stone1"
-        >
-          Minería de piedra
-        </button>
-
-        <button
-          class="chip"
-          data-up="stone2"
-        >
-          Pozo de piedra
-        </button>
-
-      </div>
-
-
-      <div style="height:9px"></div>
-
-
-      <div class="grid">
-
-
-        <div class="field">
-
-          <label>
-            Multiplicador de comida
-          </label>
-
-          <input
-            id="foodMult"
-            type="number"
-            min=".1"
-            step=".01"
-            value="1"
-          >
-
-        </div>
-
-
-        <div class="field">
-
-          <label>
-            Multiplicador de madera
-          </label>
-
-          <input
-            id="woodMult"
-            type="number"
-            min=".1"
-            step=".01"
-            value="1"
-          >
-
-        </div>
-
-
-        <div class="field">
-
-          <label>
-            Multiplicador de oro
-          </label>
-
-          <input
-            id="goldMult"
-            type="number"
-            min=".1"
-            step=".01"
-            value="1"
-          >
-
-        </div>
-
-
-        <div class="field">
-
-          <label>
-            Multiplicador de piedra
-          </label>
-
-          <input
-            id="stoneMult"
-            type="number"
-            min=".1"
-            step=".01"
-            value="1"
-          >
-
-        </div>
-
-
-        <div class="field">
-
-          <label>
-            Velocidad de entrenamiento
-          </label>
-
-          <input
-            id="trainMult"
-            type="number"
-            min=".1"
-            step=".01"
-            value="1"
-          >
-
-        </div>
-
-
-        <div class="field">
-
-          <label>
-            Eficiencia práctica
-          </label>
-
-          <input
-            id="efficiency"
-            type="number"
-            min=".5"
-            max="1"
-            step=".01"
-            value=".95"
-          >
-
-        </div>
-
-
-      </div>
-
-
-      <div class="note">
-        Los multiplicadores permiten ajustar bonificaciones concretas de una civilización.
-      </div>
-
-
+    <div class="bonusTitle">
+      Bonos de civilización
     </div>
 
-  </details>
+    <div
+      id="civBonusText"
+      class="bonusText"
+    >
+      —
+    </div>
 
+    <div
+      id="appliedBonus"
+      class="applied"
+    ></div>
+
+  </div>
 
 </section>
 
 
+<section class="card">
+
+  <div class="head">
+    <strong>
+      2 · Tecnologías económicas investigadas
+    </strong>
+
+    <span class="micro">
+      Toca para activar / desactivar
+    </span>
+  </div>
+
+  <div
+    class="techGrid"
+    id="techGrid"
+  ></div>
+
+  <div class="note">
+    Las mejoras de granja aumentan la duración de las granjas,
+    no la velocidad directa de recolección.
+    La calculadora las utiliza para estimar también la madera necesaria para resembrar.
+  </div>
+
+</section>
+
 
 <section class="card">
 
-
-  <div class="section-head">
+  <div class="head">
 
     <strong>
-      Elige tus unidades
+      3 · Unidades y líneas de producción
     </strong>
 
     <span
+      class="micro"
       id="unitCount"
-      class="small"
     >
       —
     </span>
 
   </div>
 
-
   <div class="toolbar">
 
     <input
       id="search"
       type="search"
-      placeholder="Buscar una unidad…"
+      placeholder="Buscar unidad por nombre…"
     >
 
     <button
@@ -1309,214 +337,144 @@ summary{
 
   </div>
 
-
-  <div
-    id="tabs"
-    class="tabs"
-  ></div>
-
-
-  <div
-    id="selected"
-    class="selected"
-  ></div>
-
-
-  <div
-    id="units"
-    class="units"
-  >
-
-    <div class="loading">
-      Cargando unidades e iconos…
-    </div>
-
-  </div>
-
+  <div id="groups"></div>
 
 </section>
-
 
 
 <section class="card">
 
   <strong>
-    Cómo funciona
+    Interpretación
   </strong>
 
   <div class="note">
 
-    Cada pulsación en <b>+</b>
-    representa una línea de producción continua.
+    Cada <b>+</b> añade una línea de producción continua.
 
-    Por ejemplo:
-
+    Por ejemplo,
     <b>Caballero ×2</b>
-    significa mantener dos establos produciendo Caballeros sin parar.
+    significa dos establos produciendo Caballeros sin parar.
+
+    Los resultados se mantienen en decimal.
 
   </div>
 
-</section>
+  <details class="advanced">
 
+    <summary>
+      Ajustes manuales avanzados
+    </summary>
+
+    <div
+      class="grid"
+      style="margin-top:9px"
+    >
+
+      <div class="field">
+        <label>Multiplicador comida</label>
+        <input id="foodMult" type="number" min=".1" step=".01" value="1">
+      </div>
+
+      <div class="field">
+        <label>Multiplicador madera</label>
+        <input id="woodMult" type="number" min=".1" step=".01" value="1">
+      </div>
+
+      <div class="field">
+        <label>Multiplicador oro</label>
+        <input id="goldMult" type="number" min=".1" step=".01" value="1">
+      </div>
+
+      <div class="field">
+        <label>Multiplicador piedra</label>
+        <input id="stoneMult" type="number" min=".1" step=".01" value="1">
+      </div>
+
+      <div class="field">
+        <label>Velocidad producción</label>
+        <input id="trainMult" type="number" min=".1" step=".01" value="1">
+      </div>
+
+      <div class="field">
+        <label>Eficiencia práctica</label>
+        <input id="efficiency" type="number" min=".5" max="1" step=".01" value=".95">
+      </div>
+
+    </div>
+
+  </details>
+
+</section>
 
 </main>
 
 
-
 <aside class="result">
-
 
   <div class="resources">
 
-
     <div class="resource">
-
-      <b id="outFood">
-        0.0
-      </b>
-
-      <span>
-        🍖 COMIDA
-      </span>
-
+      <b id="outFood">0.0</b>
+      <span>🍖 COMIDA</span>
     </div>
 
-
     <div class="resource">
-
-      <b id="outWood">
-        0.0
-      </b>
-
-      <span>
-        🪵 MADERA
-      </span>
-
+      <b id="outWood">0.0</b>
+      <span>🪵 MADERA</span>
     </div>
 
-
     <div class="resource">
-
-      <b id="outGold">
-        0.0
-      </b>
-
+      <b id="outGold">0.0</b>
       <span>
         <i class="ore big"></i>
         ORO
       </span>
-
     </div>
-
 
     <div class="resource">
-
-      <b id="outStone">
-        0.0
-      </b>
-
-      <span>
-        🪨 PIEDRA
-      </span>
-
+      <b id="outStone">0.0</b>
+      <span>🪨 PIEDRA</span>
     </div>
-
 
   </div>
 
-
   <div
-    id="resultSummary"
-    class="result-summary"
+    id="summary"
+    class="summary"
   >
     Selecciona una unidad para empezar.
   </div>
 
-
 </aside>
-
 
 
 <script>
 
-
-/* ==========================================================
-   FUENTES
-========================================================== */
-
-
 const CDN =
 'https://cdn.jsdelivr.net/gh/SiegeEngineers/aoe2techtree@master/';
 
-
 const RAW =
 'https://raw.githubusercontent.com/SiegeEngineers/aoe2techtree/master/';
-
-
-const DATA_URL =
-CDN +
-'data/data.json';
-
-
-const SPANISH_URL =
-CDN +
-'data/locales/es/strings.json';
-
-
-
-/* ==========================================================
-   ESTADO
-========================================================== */
-
 
 const $ =
 id =>
 document.getElementById(id);
 
 
-let raw =
-null;
-
-
-let strings =
-{};
-
-
-let civs =
-{};
-
-
-let units =
-[];
-
-
-let selected =
-{};
-
-
-let filter =
-'Todas';
-
-
-let pictureMap =
-new Map();
-
-
-let activeUpgrades =
-new Set();
-
+let raw = null;
+let strings = {};
+let civs = {};
+let units = [];
+let selected = {};
+let activeTech = new Set();
+let pictureMap = new Map();
 
 const pictureCache =
 new Map();
 
 
-
-/* ==========================================================
-   CIVILIZACIONES EN ESPAÑOL
-========================================================== */
-
-
-const civNames = {
+const CIV_ES = {
 
 Armenians:'Armenios',
 Aztecs:'Aztecas',
@@ -1572,27 +530,185 @@ Wu:'Wu'
 };
 
 
+const TECHS = [
 
-/* ==========================================================
-   AYUDANTES
-========================================================== */
+[
+  'wheelbarrow',
+  'Carretilla',
+  'Mejora movilidad/carga del aldeano'
+],
+
+[
+  'handcart',
+  'Carro de mano',
+  'Más movilidad y capacidad de carga'
+],
+
+[
+  'wood1',
+  'Hacha de doble filo',
+  'Leñadores +20 %'
+],
+
+[
+  'wood2',
+  'Sierra de arco',
+  'Leñadores +20 %'
+],
+
+[
+  'wood3',
+  'Sierra de dos manos',
+  'Leñadores +10 %'
+],
+
+[
+  'gold1',
+  'Minería de oro',
+  'Mineros de oro +15 %'
+],
+
+[
+  'gold2',
+  'Pozo de oro',
+  'Mineros de oro +15 %'
+],
+
+[
+  'stone1',
+  'Minería de piedra',
+  'Mineros de piedra +15 %'
+],
+
+[
+  'stone2',
+  'Pozo de piedra',
+  'Mineros de piedra +15 %'
+],
+
+[
+  'farm1',
+  'Collera',
+  '+75 de alimento por granja'
+],
+
+[
+  'farm2',
+  'Arado pesado',
+  '+125 de alimento por granja'
+],
+
+[
+  'farm3',
+  'Rotación de cultivos',
+  '+175 de alimento por granja'
+]
+
+];
 
 
-function stripHTML(value){
+/*
+Bonos que sí cambian directamente
+el estado estacionario de esta calculadora.
 
-  const div =
+Bonos de recursos iniciales,
+avance de edad,
+coste de tecnologías, etc.
+se muestran en la descripción,
+pero no reducen aldeanos/segundo.
+*/
+
+const CIV_RULES = {
+
+Britons:{
+  sheep:1.25,
+  label:'Pastores +25 %.'
+},
+
+Celts:{
+  wood:1.15,
+  label:'Leñadores +15 %.'
+},
+
+Franks:{
+  berries:1.15,
+  label:'Recolectores de bayas +15 %.'
+},
+
+Koreans:{
+  stone:1.20,
+  label:'Mineros de piedra +20 %.'
+},
+
+Mongols:{
+  boar:1.40,
+  label:'Cazadores +40 %.'
+},
+
+Slavs:{
+  farm:1.10,
+  label:'Granjeros +10 %.'
+},
+
+Turks:{
+  gold:1.20,
+  label:'Mineros de oro +20 %.'
+},
+
+Malians:{
+  gold:1.15,
+  label:'Mineros de oro +15 %.'
+},
+
+Romans:{
+  all:1.05,
+  label:'Aldeanos recogen recursos +5 %.'
+},
+
+Khmer:{
+  farm:1.05,
+  label:'Granjas sin punto de entrega: +5 % práctico.'
+},
+
+Berbers:{
+  all:1.025,
+  label:'Movimiento de aldeanos: +2,5 % práctico.'
+},
+
+Aztecs:{
+  all:1.035,
+  label:'Mayor capacidad de carga: +3,5 % práctico.'
+},
+
+Mayans:{
+  farmLife:1.15,
+  label:'Recursos duran +15 %; aplicado a las granjas.'
+},
+
+Teutons:{
+  farmCost:.60,
+  label:'Granjas cuestan 40 % menos madera.'
+}
+
+};
+
+
+
+function stripHTML(v){
+
+  const d =
   document.createElement(
     'div'
   );
 
-  div.innerHTML =
+  d.innerHTML =
   String(
-    value ?? ''
+    v ?? ''
   );
 
   return (
-    div.textContent ||
-    div.innerText ||
+    d.textContent ||
+    d.innerText ||
     ''
   )
   .trim();
@@ -1603,12 +719,11 @@ function stripHTML(value){
 
 function parseCost(cost){
 
-
   if(
     Array.isArray(cost)
   ){
 
-    const result = {
+    const o = {
 
       Food:0,
       Wood:0,
@@ -1619,16 +734,15 @@ function parseCost(cost){
 
 
     cost.forEach(
-      item => {
+      x => {
 
         if(
-          item &&
-          item.Type in result
+          x?.Type in o
         ){
 
-          result[item.Type] +=
+          o[x.Type] +=
           Number(
-            item.Amount
+            x.Amount
           ) || 0;
 
         }
@@ -1637,7 +751,7 @@ function parseCost(cost){
     );
 
 
-    return result;
+    return o;
 
   }
 
@@ -1645,24 +759,24 @@ function parseCost(cost){
   return {
 
     Food:
-      Number(
-        cost?.Food
-      ) || 0,
+    Number(
+      cost?.Food
+    ) || 0,
 
     Wood:
-      Number(
-        cost?.Wood
-      ) || 0,
+    Number(
+      cost?.Wood
+    ) || 0,
 
     Gold:
-      Number(
-        cost?.Gold
-      ) || 0,
+    Number(
+      cost?.Gold
+    ) || 0,
 
     Stone:
-      Number(
-        cost?.Stone
-      ) || 0
+    Number(
+      cost?.Stone
+    ) || 0
 
   };
 
@@ -1670,34 +784,54 @@ function parseCost(cost){
 
 
 
-/* ==========================================================
-   NOMBRE ESPAÑOL REAL
-========================================================== */
-
-
-function spanishName(unit,id){
-
-
-  const translated =
-  strings[
-    String(
-      unit?.LanguageNameId
-    )
-  ];
-
-
-  const result =
-  stripHTML(
-    translated
-  );
-
+function spanishName(
+  u,
+  id
+){
 
   return (
-    result ||
-    unit?.internal_name ||
+
+    stripHTML(
+
+      strings[
+        String(
+          u?.LanguageNameId
+        )
+      ]
+
+      ??
+
+      strings[
+        u?.LanguageNameId
+      ]
+
+    )
+
+    ||
+
+    u?.internal_name
+
+    ||
+
     (
       'Unidad ' +
       id
+    )
+
+  );
+
+}
+
+
+
+function military(name){
+
+  return !(
+    /villager|trade cart|trade cog|fishing ship|transport ship|sheep|boar|deer|wolf|horse$|cow|goat|llama|buffalo|turkey|relic|king|donkey/i
+    .test(
+      String(
+        name || ''
+      )
     )
   );
 
@@ -1705,13 +839,7 @@ function spanishName(unit,id){
 
 
 
-/* ==========================================================
-   CATEGORÍAS
-========================================================== */
-
-
 function category(name){
-
 
   const n =
   String(
@@ -1721,7 +849,8 @@ function category(name){
 
 
   if(
-    /galley|galleon|fire ship|demolition|longboat|turtle ship|caravel|cannon galleon|dromon|warship/.test(n)
+    /galley|galleon|fire ship|demolition|longboat|turtle ship|caravel|cannon galleon|dromon|warship/
+    .test(n)
   ){
 
     return 'Naval';
@@ -1730,25 +859,18 @@ function category(name){
 
 
   if(
-    /monk|missionary/.test(n)
+    /monk|missionary/
+    .test(n)
   ){
 
-    return 'Monjes';
+    return 'Monasterio';
 
   }
 
 
   if(
-    /hand cannoneer|janissary|arquebus|gunpowder/.test(n)
-  ){
-
-    return 'Pólvora';
-
-  }
-
-
-  if(
-    /ram|mangonel|onager|scorpion|trebuchet|bombard cannon|petard|houfnice|siege|organ gun|hussite wagon/.test(n)
+    /ram|mangonel|onager|scorpion|trebuchet|bombard cannon|petard|houfnice|siege|organ gun|hussite wagon/
+    .test(n)
   ){
 
     return 'Asedio';
@@ -1757,7 +879,18 @@ function category(name){
 
 
   if(
-    /archer|bowman|skirmisher|crossbow|arbalest|chu ko nu|gbeto|mameluke|chakram|conquistador|arambai|wagon|ratha/.test(n)
+    /hand cannoneer|janissary|arquebus|gunpowder/
+    .test(n)
+  ){
+
+    return 'Pólvora';
+
+  }
+
+
+  if(
+    /archer|bowman|skirmisher|crossbow|arbalest|chu ko nu|gbeto|mameluke|chakram|conquistador|arambai|wagon|ratha/
+    .test(n)
   ){
 
     return 'Arqueros';
@@ -1766,7 +899,8 @@ function category(name){
 
 
   if(
-    /knight|caval|hussar|camel|paladin|cavalier|tarkan|cataphract|leitis|keshik|konnik|monaspa|coustillier|elephant/.test(n)
+    /knight|caval|hussar|camel|paladin|cavalier|tarkan|cataphract|leitis|keshik|konnik|monaspa|coustillier|elephant/
+    .test(n)
   ){
 
     return 'Caballería';
@@ -1780,41 +914,16 @@ function category(name){
 
 
 
-function military(name){
-
-
-  const n =
-  String(
-    name || ''
-  )
-  .toLowerCase();
-
-
-  return !(
-    /villager|trade cart|trade cog|fishing ship|transport ship|sheep|boar|deer|wolf|horse$|cow|goat|llama|buffalo|turkey|relic|king|donkey/.test(n)
-  );
-
-}
-
-
-
-/* ==========================================================
-   DESCARGAR JSON
-========================================================== */
-
-
-async function json(
-  primary,
-  fallback
+async function getJSON(
+  a,
+  b
 ){
-
 
   try{
 
-
-    const response =
+    const r =
     await fetch(
-      primary,
+      a,
       {
         cache:'no-store'
       }
@@ -1822,44 +931,44 @@ async function json(
 
 
     if(
-      !response.ok
+      !r.ok
+    ){
+
+      throw 0;
+
+    }
+
+
+    return await
+    r.json();
+
+
+  }catch{
+
+
+    const r =
+    await fetch(
+      b,
+      {
+        cache:'no-store'
+      }
+    );
+
+
+    if(
+      !r.ok
     ){
 
       throw new Error(
-        'HTTP ' +
-        response.status
+        'No se pudo cargar ' +
+        b
       );
 
     }
 
 
     return await
-    response.json();
-
-
-  }catch(error){
-
-
-    const response =
-    await fetch(
-      fallback,
-      {
-        cache:'no-store'
-      }
-    );
-
-
-    if(
-      !response.ok
-    ){
-
-      throw error;
-
-    }
-
-
-    return await
-    response.json();
+    r.json();
 
   }
 
@@ -1867,18 +976,7 @@ async function json(
 
 
 
-/* ==========================================================
-   MAPA CORRECTO:
-   UNIT ID -> PICTURE INDEX
-
-   ESTA ES LA CORRECCIÓN IMPORTANTE.
-========================================================== */
-
-
-function extractPictures(
-  tree
-){
-
+function extractPictures(tree){
 
   const map =
   new Map();
@@ -1888,13 +986,15 @@ function extractPictures(
   new WeakSet();
 
 
-  function walk(value){
-
+  function walk(v){
 
     if(
-      !value ||
-      typeof value !==
+      !v
+      ||
+      typeof v !==
       'object'
+      ||
+      seen.has(v)
     ){
 
       return;
@@ -1902,50 +1002,37 @@ function extractPictures(
     }
 
 
-    if(
-      seen.has(value)
-    ){
-
-      return;
-
-    }
-
-
-    seen.add(value);
+    seen.add(v);
 
 
     if(
-      !Array.isArray(value)
+      !Array.isArray(v)
+      &&
+      v.use_type ===
+      'Unit'
     ){
 
-      const unitID =
+      const id =
       Number(
-        value.node_id
+        v.node_id
       );
 
 
-      const picture =
+      const pic =
       Number(
-        value.picture_index
+        v.picture_index
       );
 
 
       if(
-        value.use_type ===
-        'Unit'
+        Number.isFinite(id)
         &&
-        Number.isFinite(
-          unitID
-        )
-        &&
-        Number.isFinite(
-          picture
-        )
+        Number.isFinite(pic)
       ){
 
         map.set(
-          unitID,
-          picture
+          id,
+          pic
         );
 
       }
@@ -1954,7 +1041,7 @@ function extractPictures(
 
 
     Object
-    .values(value)
+    .values(v)
     .forEach(
       walk
     );
@@ -1971,15 +1058,7 @@ function extractPictures(
 
 
 
-/* ==========================================================
-   CARGAR ICONOS REALES DE LA CIVILIZACIÓN
-========================================================== */
-
-
-async function loadPictures(
-  civ
-){
-
+async function loadPictures(civ){
 
   if(
     pictureCache.has(civ)
@@ -1998,7 +1077,7 @@ async function loadPictures(
   .toUpperCase();
 
 
-  const path =
+  const p =
   'data/trees/' +
   encodeURIComponent(code) +
   '.json';
@@ -2008,9 +1087,12 @@ async function loadPictures(
 
 
     const tree =
-    await json(
-      CDN + path,
-      RAW + path
+    await getJSON(
+
+      CDN + p,
+
+      RAW + p
+
     );
 
 
@@ -2024,13 +1106,7 @@ async function loadPictures(
     );
 
 
-  }catch(error){
-
-
-    console.warn(
-      'No se pudo cargar el mapa de imágenes',
-      error
-    );
+  }catch{
 
 
     pictureMap =
@@ -2042,32 +1118,10 @@ async function loadPictures(
 
 
 
-/* ==========================================================
-   URL DE ICONO
-========================================================== */
-
-
-function iconURL(
-  picture
-){
-
-
-  return (
-    CDN +
-    'img/Unit/' +
-    picture +
-    '.png'
-  );
-
-}
-
-
-
 function iconError(
   img,
-  picture
+  pic
 ){
-
 
   if(
     img.dataset.retry !==
@@ -2081,7 +1135,7 @@ function iconError(
     img.src =
     RAW +
     'img/Unit/' +
-    picture +
+    pic +
     '.png';
 
 
@@ -2090,42 +1144,40 @@ function iconError(
   }
 
 
-  const name =
-  img.alt ||
-  '?';
-
-
   img.parentElement.innerHTML =
-  '<div class="fallback">' +
-  name
+
+  '<div class="fallback">'
+
+  +
+
+  (
+    img.alt ||
+    '?'
+  )
   .slice(
     0,
     2
   )
   .toUpperCase()
+
   +
+
   '</div>';
 
 }
 
 
 
-/* ==========================================================
-   UNIDADES DISPONIBLES
-========================================================== */
-
-
 function availableUnits(){
 
-
-  const civ =
+  const c =
   civs[
     $('civ').value
   ];
 
 
   if(
-    !civ
+    !c
   ){
 
     return units;
@@ -2135,18 +1187,20 @@ function availableUnits(){
 
   const ids =
   new Set(
+
     (
-      civ.Unit ||
+      c.Unit ||
       []
     )
     .map(Number)
+
   );
 
 
   return units.filter(
-    unit =>
+    u =>
     ids.has(
-      unit.id
+      u.id
     )
   );
 
@@ -2154,40 +1208,79 @@ function availableUnits(){
 
 
 
-/* ==========================================================
-   PESTAÑAS
-========================================================== */
+function civDescription(){
 
-
-function buildTabs(){
-
-
-  const categories = [
-
-    'Todas',
-    'Infantería',
-    'Arqueros',
-    'Caballería',
-    'Pólvora',
-    'Asedio',
-    'Monjes',
-    'Naval'
-
+  const c =
+  civs[
+    $('civ').value
   ];
 
 
-  $('tabs').innerHTML =
-  categories
+  if(
+    !c
+  ){
+
+    return 'No hay descripción disponible.';
+
+  }
+
+
+  const key =
+  String(
+    c.help_string_id ??
+    ''
+  );
+
+
+  return (
+
+    stripHTML(
+
+      strings[key]
+
+      ??
+
+      strings[
+        c.help_string_id
+      ]
+
+    )
+
+    ||
+
+    'Consulta el árbol tecnológico para ver todos los bonos de esta civilización.'
+
+  );
+
+}
+
+
+
+function renderTechs(){
+
+  $('techGrid').innerHTML =
+
+  TECHS
   .map(
-    value =>
+    ([id,n,d]) =>
+
     `
     <button
-      class="tab ${value === 'Todas' ? 'on' : ''}"
-      data-category="${value}"
+      class="tech ${activeTech.has(id) ? 'on' : ''}"
+      data-tech="${id}"
     >
-      ${value}
+
+      <b>
+        ${n}
+      </b>
+
+      <span>
+        ${d}
+      </span>
+
     </button>
     `
+
   )
   .join('');
 
@@ -2195,351 +1288,268 @@ function buildTabs(){
 
 
 
-/* ==========================================================
-   ORO MINERAL
-========================================================== */
-
-
-function goldCost(
-  amount
-){
-
+function ore(v){
 
   return `
-    <span class="tag">
-      <i class="ore"></i>
-      ${amount}
-    </span>
+
+  <span class="tag">
+
+    <i class="ore"></i>
+
+    ${v}
+
+  </span>
+
   `;
 
 }
 
 
 
-/* ==========================================================
-   RESUMEN DE SELECCIÓN
-========================================================== */
+function renderGroups(){
 
-
-function selectedUnits(){
-
-
-  const items =
-  Object
-  .entries(selected)
-
-  .filter(
-    ([,count]) =>
-    Number(count) > 0
-  )
-
-  .map(
-    ([id,count]) => {
-
-      return {
-
-        unit:
-        units.find(
-          unit =>
-          unit.id ===
-          Number(id)
-        ),
-
-        count:
-        Number(count)
-
-      };
-
-    }
-  )
-
-  .filter(
-    item =>
-    item.unit
-  );
-
-
-  $('selected').innerHTML =
-  items
-  .map(
-    item =>
-    `
-    <span class="selected-pill">
-      ${item.unit.display}
-      ×${item.count}
-    </span>
-    `
-  )
-  .join('');
-
-}
-
-
-
-/* ==========================================================
-   DIBUJAR UNIDADES
-========================================================== */
-
-
-function render(){
-
-
-  if(
-    !raw
-  ){
-
-    return;
-
-  }
-
-
-  let list =
+  const list =
   availableUnits();
 
 
-  const search =
+  const q =
   $('search')
   .value
   .trim()
   .toLowerCase();
 
 
-  if(
-    filter !==
-    'Todas'
-  ){
+  const filtered =
+  q
 
-    list =
-    list.filter(
-      unit =>
-      unit.category ===
-      filter
-    );
+  ?
 
-  }
+  list.filter(
+    u =>
+    (
+      u.display +
+      ' ' +
+      u.internal
+    )
+    .toLowerCase()
+    .includes(q)
+  )
+
+  :
+
+  list;
 
 
-  if(
-    search
-  ){
+  const cats = [
 
-    list =
-    list.filter(
-      unit =>
-      (
-        unit.display +
-        ' ' +
-        unit.internal
-      )
-      .toLowerCase()
-      .includes(search)
-    );
+    'Infantería',
+    'Arqueros',
+    'Caballería',
+    'Pólvora',
+    'Asedio',
+    'Monasterio',
+    'Naval'
 
-  }
+  ];
 
 
   $('unitCount').textContent =
-  list.length +
-  ' unidades disponibles';
+  filtered.length +
+  ' unidades';
 
 
-  selectedUnits();
+  $('groups').innerHTML =
 
-
-  if(
-    !list.length
-  ){
-
-    $('units').innerHTML =
-    `
-    <div class="empty">
-      No hay unidades con este filtro.
-    </div>
-    `;
-
-    return;
-
-  }
-
-
-  $('units').innerHTML =
-  list
+  cats
   .map(
-    unit => {
+    cat => {
 
 
-      const amount =
-      selected[
-        unit.id
-      ] || 0;
-
-
-      const picture =
-      pictureMap.get(
-        unit.id
+      const arr =
+      filtered.filter(
+        u =>
+        u.category ===
+        cat
       );
 
 
-      let image;
-
-
       if(
-        picture !==
-        undefined
+        !arr.length
       ){
 
-
-        image =
-        `
-        <img
-          src="${iconURL(picture)}"
-          loading="lazy"
-          data-retry="0"
-          alt="${unit.display}"
-          onerror="iconError(this,${picture})"
-        >
-        `;
-
-
-      }else{
-
-
-        image =
-        `
-        <div class="fallback">
-          ${unit.display.slice(0,2).toUpperCase()}
-        </div>
-        `;
+        return '';
 
       }
 
 
+      const cards =
+      arr
+      .map(
+        u => {
+
+
+          const n =
+          selected[
+            u.id
+          ] || 0;
+
+
+          const pic =
+          pictureMap.get(
+            u.id
+          );
+
+
+          const img =
+          pic !==
+          undefined
+
+          ?
+
+          `
+          <img
+            loading="lazy"
+            src="${CDN}img/Unit/${pic}.png"
+            data-retry="0"
+            alt="${u.display}"
+            onerror="iconError(this,${pic})"
+          >
+          `
+
+          :
+
+          `
+          <div class="fallback">
+            ${u.display.slice(0,2).toUpperCase()}
+          </div>
+          `;
+
+
+          return `
+
+          <article
+            class="unit ${n ? 'active' : ''}"
+            onclick="toggleUnit(${u.id})"
+          >
+
+            <div class="pic">
+              ${img}
+            </div>
+
+            <div>
+
+              <h3>
+                ${u.display}
+              </h3>
+
+              <div class="tags">
+
+                ${
+                  u.food
+                  ?
+                  `<span class="tag">🍖 ${u.food}</span>`
+                  :
+                  ''
+                }
+
+                ${
+                  u.wood
+                  ?
+                  `<span class="tag">🪵 ${u.wood}</span>`
+                  :
+                  ''
+                }
+
+                ${
+                  u.gold
+                  ?
+                  ore(
+                    u.gold
+                  )
+                  :
+                  ''
+                }
+
+                ${
+                  u.stone
+                  ?
+                  `<span class="tag">🪨 ${u.stone}</span>`
+                  :
+                  ''
+                }
+
+              </div>
+
+              <div class="meta">
+                ${u.time}s de entrenamiento
+              </div>
+
+            </div>
+
+
+            <div
+              class="qty"
+              onclick="event.stopPropagation()"
+            >
+
+              <button
+                onclick="changeQty(${u.id},-1)"
+              >
+                −
+              </button>
+
+              <b>
+                ${n}
+              </b>
+
+              <button
+                onclick="changeQty(${u.id},1)"
+              >
+                +
+              </button>
+
+            </div>
+
+
+          </article>
+
+          `;
+
+        }
+      )
+      .join('');
+
+
       return `
 
-
-      <article
-        class="unit ${amount ? 'active' : ''}"
-        onclick="toggleUnit(${unit.id})"
+      <details
+        class="group"
+        ${q ? 'open' : ''}
       >
 
+        <summary>
 
-        <div class="unit-image">
+          <span>
+            ${cat}
+          </span>
 
-          ${image}
+          <span class="groupMeta">
+            ${arr.length} unidades
+          </span>
 
-        </div>
-
-
-        <div class="unit-content">
-
-          <h3>
-            ${unit.display}
-          </h3>
+        </summary>
 
 
-          <div class="tags">
+        <div class="units">
 
-
-            ${
-              unit.food
-              ?
-              `
-              <span class="tag">
-                🍖 ${unit.food}
-              </span>
-              `
-              :
-              ''
-            }
-
-
-            ${
-              unit.wood
-              ?
-              `
-              <span class="tag">
-                🪵 ${unit.wood}
-              </span>
-              `
-              :
-              ''
-            }
-
-
-            ${
-              unit.gold
-              ?
-              goldCost(
-                unit.gold
-              )
-              :
-              ''
-            }
-
-
-            ${
-              unit.stone
-              ?
-              `
-              <span class="tag">
-                🪨 ${unit.stone}
-              </span>
-              `
-              :
-              ''
-            }
-
-
-          </div>
-
-
-          <div class="meta">
-
-            ${unit.category}
-
-            ·
-
-            ${unit.time}s
-
-          </div>
-
+          ${cards}
 
         </div>
 
 
-        <div
-          class="qty"
-          onclick="event.stopPropagation()"
-        >
-
-
-          <button
-            onclick="changeQty(${unit.id},-1)"
-          >
-            −
-          </button>
-
-
-          <b>
-            ${amount}
-          </b>
-
-
-          <button
-            onclick="changeQty(${unit.id},1)"
-          >
-            +
-          </button>
-
-
-        </div>
-
-
-      </article>
-
+      </details>
 
       `;
-
 
     }
   )
@@ -2549,14 +1559,8 @@ function render(){
 
 
 
-/* ==========================================================
-   CANTIDAD
-========================================================== */
-
-
 window.toggleUnit =
-function(id){
-
+id => {
 
   selected[id] =
   selected[id]
@@ -2566,7 +1570,7 @@ function(id){
   1;
 
 
-  render();
+  renderGroups();
 
   calculate();
 
@@ -2575,11 +1579,10 @@ function(id){
 
 
 window.changeQty =
-function(
+(
   id,
-  difference
-){
-
+  d
+) => {
 
   selected[id] =
   Math.max(
@@ -2589,11 +1592,11 @@ function(
       0
     )
     +
-    difference
+    d
   );
 
 
-  render();
+  renderGroups();
 
   calculate();
 
@@ -2601,37 +1604,26 @@ function(
 
 
 
-/* ==========================================================
-   TASAS DE RECOLECCIÓN
-========================================================== */
+function rates(){
+
+  const source =
+  $('foodSource').value;
 
 
-function gatherRates(){
+  let r = {
 
-
-  const food =
-  {
-
-    farm:.32,
-
-    sheep:.34,
-
-    boar:.41,
-
-    berries:.31,
-
-    fish:.43
-
-  }[
-    $('foodSource').value
-  ]
-  ||
-  .32;
-
-
-  const rates = {
-
-    food,
+    food:
+    {
+      farm:.32,
+      sheep:.34,
+      boar:.41,
+      berries:.31,
+      fish:.43
+    }[
+      source
+    ]
+    ||
+    .32,
 
     wood:.39,
 
@@ -2643,134 +1635,235 @@ function gatherRates(){
 
 
   if(
-    activeUpgrades.has(
-      'wheelbarrow'
+    activeTech.has(
+      'wood1'
     )
   ){
 
-    Object
-    .keys(rates)
-    .forEach(
-      key =>
-      rates[key] *=
-      1.03
-    );
-
-  }
-
-
-  if(
-    activeUpgrades.has(
-      'handcart'
-    )
-  ){
-
-    Object
-    .keys(rates)
-    .forEach(
-      key =>
-      rates[key] *=
-      1.05
-    );
-
-  }
-
-
-  if(
-    activeUpgrades.has('wood1')
-  ){
-
-    rates.wood *=
-    1.10;
-
-  }
-
-
-  if(
-    activeUpgrades.has('wood2')
-  ){
-
-    rates.wood *=
+    r.wood *=
     1.20;
 
   }
 
 
   if(
-    activeUpgrades.has('wood3')
+    activeTech.has(
+      'wood2'
+    )
   ){
 
-    rates.wood *=
+    r.wood *=
+    1.20;
+
+  }
+
+
+  if(
+    activeTech.has(
+      'wood3'
+    )
+  ){
+
+    r.wood *=
     1.10;
 
   }
 
 
   if(
-    activeUpgrades.has('gold1')
+    activeTech.has(
+      'gold1'
+    )
   ){
 
-    rates.gold *=
+    r.gold *=
     1.15;
 
   }
 
 
   if(
-    activeUpgrades.has('gold2')
+    activeTech.has(
+      'gold2'
+    )
   ){
 
-    rates.gold *=
+    r.gold *=
     1.15;
 
   }
 
 
   if(
-    activeUpgrades.has('stone1')
+    activeTech.has(
+      'stone1'
+    )
   ){
 
-    rates.stone *=
+    r.stone *=
     1.15;
 
   }
 
 
   if(
-    activeUpgrades.has('stone2')
+    activeTech.has(
+      'stone2'
+    )
   ){
 
-    rates.stone *=
+    r.stone *=
     1.15;
 
   }
 
 
-  rates.food *=
+  if(
+    activeTech.has(
+      'wheelbarrow'
+    )
+  ){
+
+    r.food *=
+    source ===
+    'farm'
+    ?
+    1.10
+    :
+    1.03;
+
+
+    r.wood *=
+    1.03;
+
+
+    r.gold *=
+    1.02;
+
+
+    r.stone *=
+    1.02;
+
+  }
+
+
+  if(
+    activeTech.has(
+      'handcart'
+    )
+  ){
+
+    r.food *=
+    source ===
+    'farm'
+    ?
+    1.05
+    :
+    1.03;
+
+
+    r.wood *=
+    1.03;
+
+
+    r.gold *=
+    1.03;
+
+
+    r.stone *=
+    1.03;
+
+  }
+
+
+  const rule =
+  CIV_RULES[
+    $('civ').value
+  ]
+  ||
+  {};
+
+
+  if(
+    rule.all
+  ){
+
+    Object
+    .keys(r)
+    .forEach(
+      k =>
+      r[k] *=
+      rule.all
+    );
+
+  }
+
+
+  if(
+    rule[source]
+  ){
+
+    r.food *=
+    rule[source];
+
+  }
+
+
+  if(
+    rule.wood
+  ){
+
+    r.wood *=
+    rule.wood;
+
+  }
+
+
+  if(
+    rule.gold
+  ){
+
+    r.gold *=
+    rule.gold;
+
+  }
+
+
+  if(
+    rule.stone
+  ){
+
+    r.stone *=
+    rule.stone;
+
+  }
+
+
+  r.food *=
   Number(
     $('foodMult').value
   ) || 1;
 
 
-  rates.wood *=
+  r.wood *=
   Number(
     $('woodMult').value
   ) || 1;
 
 
-  rates.gold *=
+  r.gold *=
   Number(
     $('goldMult').value
   ) || 1;
 
 
-  rates.stone *=
+  r.stone *=
   Number(
     $('stoneMult').value
   ) || 1;
 
 
-  const efficiency =
+  const eff =
   Math.min(
     1,
     Math.max(
@@ -2783,27 +1876,87 @@ function gatherRates(){
 
 
   Object
-  .keys(rates)
+  .keys(r)
   .forEach(
-    key =>
-    rates[key] *=
-    efficiency
+    k =>
+    r[k] *=
+    eff
   );
 
 
-  return rates;
+  return r;
 
 }
 
 
 
-/* ==========================================================
-   CÁLCULO
-========================================================== */
+function farmCapacity(){
+
+  let food =
+  175;
+
+
+  if(
+    activeTech.has(
+      'farm1'
+    )
+  ){
+
+    food +=
+    75;
+
+  }
+
+
+  if(
+    activeTech.has(
+      'farm2'
+    )
+  ){
+
+    food +=
+    125;
+
+  }
+
+
+  if(
+    activeTech.has(
+      'farm3'
+    )
+  ){
+
+    food +=
+    175;
+
+  }
+
+
+  const rule =
+  CIV_RULES[
+    $('civ').value
+  ]
+  ||
+  {};
+
+
+  if(
+    rule.farmLife
+  ){
+
+    food *=
+    rule.farmLife;
+
+  }
+
+
+  return food;
+
+}
+
 
 
 function calculate(){
-
 
   if(
     !raw
@@ -2814,11 +1967,11 @@ function calculate(){
   }
 
 
-  const rates =
-  gatherRates();
+  const r =
+  rates();
 
 
-  const training =
+  const speed =
   Math.max(
     .1,
     Number(
@@ -2861,16 +2014,16 @@ function calculate(){
       }
 
 
-      const unit =
+      const u =
       units.find(
-        unit =>
-        unit.id ===
+        x =>
+        x.id ===
         Number(id)
       );
 
 
       if(
-        !unit
+        !u
       ){
 
         return;
@@ -2878,39 +2031,37 @@ function calculate(){
       }
 
 
-      const perSecond =
+      const ps =
       (
         count *
-        training
+        speed
       )
       /
-      unit.time;
+      u.time;
 
 
       need.food +=
-      unit.food *
-      perSecond;
+      u.food *
+      ps;
 
 
       need.wood +=
-      unit.wood *
-      perSecond;
+      u.wood *
+      ps;
 
 
       need.gold +=
-      unit.gold *
-      perSecond;
+      u.gold *
+      ps;
 
 
       need.stone +=
-      unit.stone *
-      perSecond;
+      u.stone *
+      ps;
 
 
       names.push(
-        unit.display +
-        ' ×' +
-        count
+        `${u.display} ×${count}`
       );
 
 
@@ -2918,10 +2069,51 @@ function calculate(){
   );
 
 
+  /*
+  Madera necesaria para resembrar granjas.
+  */
+
+  if(
+    $('foodSource').value ===
+    'farm'
+    &&
+    need.food > 0
+  ){
+
+    const rule =
+    CIV_RULES[
+      $('civ').value
+    ]
+    ||
+    {};
+
+
+    const farmCost =
+    60 *
+    (
+      rule.farmCost ||
+      1
+    );
+
+
+    need.wood +=
+
+    (
+      need.food /
+      farmCapacity()
+    )
+
+    *
+
+    farmCost;
+
+  }
+
+
   $('outFood').textContent =
   (
     need.food /
-    rates.food
+    r.food
   )
   .toFixed(1);
 
@@ -2929,7 +2121,7 @@ function calculate(){
   $('outWood').textContent =
   (
     need.wood /
-    rates.wood
+    r.wood
   )
   .toFixed(1);
 
@@ -2937,7 +2129,7 @@ function calculate(){
   $('outGold').textContent =
   (
     need.gold /
-    rates.gold
+    r.gold
   )
   .toFixed(1);
 
@@ -2945,12 +2137,12 @@ function calculate(){
   $('outStone').textContent =
   (
     need.stone /
-    rates.stone
+    r.stone
   )
   .toFixed(1);
 
 
-  $('resultSummary').textContent =
+  $('summary').textContent =
   names.length
   ?
   names.join(' · ')
@@ -2961,20 +2153,43 @@ function calculate(){
 
 
 
-/* ==========================================================
-   CAMBIO DE CIVILIZACIÓN
-========================================================== */
+function updateBonusPanel(){
+
+  $('civBonusText').textContent =
+  civDescription();
 
 
-async function changeCivilization(){
+  const rule =
+  CIV_RULES[
+    $('civ').value
+  ];
 
+
+  $('appliedBonus').textContent =
+
+  rule?.label
+
+  ?
+
+  'Aplicado al cálculo: ' +
+  rule.label
+
+  :
+
+  'Esta civilización no tiene un modificador directo de recolección que cambie este cálculo continuo, o su bono afecta a otros aspectos de la partida.';
+
+}
+
+
+
+async function changeCiv(){
 
   $('statusDot').className =
   'dot';
 
 
   $('statusText').textContent =
-  'Cargando iconos…';
+  'Cargando…';
 
 
   selected =
@@ -2986,279 +2201,38 @@ async function changeCivilization(){
   );
 
 
+  updateBonusPanel();
+
+  renderGroups();
+
+  calculate();
+
+
   $('statusDot').className =
   'dot ok';
 
 
   $('statusText').textContent =
-  'Datos e iconos listos';
-
-
-  render();
-
-  calculate();
+  'Listo';
 
 }
 
 
 
-/* ==========================================================
-   CARGA INICIAL
-========================================================== */
-
-
-async function load(){
-
-
-  try{
-
-
-    const [
-      data,
-      spanish
-    ] =
-    await Promise.all([
-
-
-      json(
-
-        DATA_URL,
-
-        RAW +
-        'data/data.json'
-
-      ),
-
-
-      json(
-
-        SPANISH_URL,
-
-        RAW +
-        'data/locales/es/strings.json'
-
-      )
-
-
-    ]);
-
-
-    raw =
-    data;
-
-
-    strings =
-    spanish || {};
-
-
-    civs =
-    raw.civs || {};
-
-
-    const unitData =
-    raw?.data?.Unit ||
-    {};
-
-
-    units =
-    Object
-    .entries(unitData)
-
-    .map(
-      ([id,unit]) => {
-
-
-        const cost =
-        parseCost(
-          unit?.Cost
-        );
-
-
-        const internal =
-        unit?.internal_name ||
-        (
-          'Unidad ' +
-          id
-        );
-
-
-        return {
-
-          id:
-          Number(id),
-
-          internal,
-
-          display:
-          spanishName(
-            unit,
-            id
-          ),
-
-          food:
-          cost.Food,
-
-          wood:
-          cost.Wood,
-
-          gold:
-          cost.Gold,
-
-          stone:
-          cost.Stone,
-
-          time:
-          Number(
-            unit?.TrainTime
-          ) || 0,
-
-          category:
-          category(
-            internal
-          )
-
-        };
-
-
-      }
-    )
-
-    .filter(
-      unit =>
-
-      unit.time > 0
-
-      &&
-
-      military(
-        unit.internal
-      )
-
-      &&
-
-      (
-        unit.food ||
-        unit.wood ||
-        unit.gold ||
-        unit.stone
-      )
-
-    );
-
-
-    $('civ').innerHTML =
-    Object
-    .keys(civs)
-
-    .sort(
-      (a,b) =>
-
-      (
-        civNames[a] ||
-        a
-      )
-
-      .localeCompare(
-
-        civNames[b] ||
-        b,
-
-        'es'
-
-      )
-    )
-
-    .map(
-      civ =>
-      `
-      <option value="${civ}">
-        ${civNames[civ] || civ}
-      </option>
-      `
-    )
-
-    .join('');
-
-
-    if(
-      civs.Britons
-    ){
-
-      $('civ').value =
-      'Britons';
-
-    }
-
-
-    buildTabs();
-
-
-    await loadPictures(
-      $('civ').value
-    );
-
-
-    $('statusDot').className =
-    'dot ok';
-
-
-    $('statusText').textContent =
-    'Datos e iconos listos';
-
-
-    render();
-
-    calculate();
-
-
-  }catch(error){
-
-
-    console.error(error);
-
-
-    $('statusDot').className =
-    'dot error';
-
-
-    $('statusText').textContent =
-    'Error al cargar';
-
-
-    $('units').innerHTML =
-    `
-    <div class="error">
-      No se pudieron cargar los datos.
-      Recarga la página dentro de unos segundos.
-    </div>
-    `;
-
-
-  }
-
-}
-
-
-
-/* ==========================================================
-   EVENTOS
-========================================================== */
-
-
-$('tabs')
+$('techGrid')
 .addEventListener(
   'click',
-  event => {
+  e => {
 
 
-    const button =
-    event.target.closest(
-      '[data-category]'
+    const b =
+    e.target.closest(
+      '[data-tech]'
     );
 
 
     if(
-      !button
+      !b
     ){
 
       return;
@@ -3266,30 +2240,26 @@ $('tabs')
     }
 
 
-    filter =
-    button.dataset.category;
+    const k =
+    b.dataset.tech;
 
 
-    document
-    .querySelectorAll(
-      '.tab'
-    )
+    if(
+      activeTech.has(k)
+    ){
 
-    .forEach(
-      tab =>
+      activeTech.delete(k);
 
-      tab.classList.toggle(
+    }else{
 
-        'on',
+      activeTech.add(k);
 
-        tab.dataset.category ===
-        filter
-
-      )
-    );
+    }
 
 
-    render();
+    renderTechs();
+
+    calculate();
 
 
   }
@@ -3300,23 +2270,7 @@ $('tabs')
 $('search')
 .addEventListener(
   'input',
-  render
-);
-
-
-
-$('civ')
-.addEventListener(
-  'change',
-  changeCivilization
-);
-
-
-
-$('foodSource')
-.addEventListener(
-  'change',
-  calculate
+  renderGroups
 );
 
 
@@ -3335,7 +2289,7 @@ $('clearBtn')
     '';
 
 
-    render();
+    renderGroups();
 
     calculate();
 
@@ -3345,63 +2299,18 @@ $('clearBtn')
 
 
 
-$('upgrades')
+$('civ')
 .addEventListener(
-  'click',
-  event => {
+  'change',
+  changeCiv
+);
 
 
-    const button =
-    event.target.closest(
-      '[data-up]'
-    );
 
-
-    if(
-      !button
-    ){
-
-      return;
-
-    }
-
-
-    const key =
-    button.dataset.up;
-
-
-    if(
-      activeUpgrades.has(key)
-    ){
-
-      activeUpgrades.delete(
-        key
-      );
-
-    }else{
-
-      activeUpgrades.add(
-        key
-      );
-
-    }
-
-
-    button.classList.toggle(
-
-      'on',
-
-      activeUpgrades.has(
-        key
-      )
-
-    );
-
-
-    calculate();
-
-
-  }
+$('foodSource')
+.addEventListener(
+  'change',
+  calculate
 );
 
 
@@ -3427,13 +2336,247 @@ $('upgrades')
 
 
 
-/* ==========================================================
-   INICIAR
-========================================================== */
+async function load(){
+
+  try{
+
+
+    const [
+      data,
+      es
+    ] =
+
+    await Promise.all([
+
+
+      getJSON(
+
+        CDN +
+        'data/data.json',
+
+        RAW +
+        'data/data.json'
+
+      ),
+
+
+      getJSON(
+
+        CDN +
+        'data/locales/es/strings.json',
+
+        RAW +
+        'data/locales/es/strings.json'
+
+      )
+
+
+    ]);
+
+
+    raw =
+    data;
+
+
+    strings =
+    es || {};
+
+
+    civs =
+    raw.civs ||
+    {};
+
+
+    units =
+
+    Object
+    .entries(
+      raw?.data?.Unit ||
+      {}
+    )
+
+    .map(
+      ([id,u]) => {
+
+
+        const c =
+        parseCost(
+          u?.Cost
+        );
+
+
+        const internal =
+        u?.internal_name ||
+        (
+          'Unidad ' +
+          id
+        );
+
+
+        return {
+
+          id:
+          Number(id),
+
+          internal,
+
+          display:
+          spanishName(
+            u,
+            id
+          ),
+
+          food:
+          c.Food,
+
+          wood:
+          c.Wood,
+
+          gold:
+          c.Gold,
+
+          stone:
+          c.Stone,
+
+          time:
+          Number(
+            u?.TrainTime
+          ) || 0,
+
+          category:
+          category(
+            internal
+          )
+
+        };
+
+
+      }
+    )
+
+    .filter(
+      u =>
+
+      u.time > 0
+
+      &&
+
+      military(
+        u.internal
+      )
+
+      &&
+
+      (
+        u.food ||
+        u.wood ||
+        u.gold ||
+        u.stone
+      )
+
+    );
+
+
+    $('civ').innerHTML =
+
+    Object
+    .keys(civs)
+
+    .sort(
+      (a,b) =>
+
+      (
+        CIV_ES[a] ||
+        a
+      )
+
+      .localeCompare(
+
+        CIV_ES[b] ||
+        b,
+
+        'es'
+
+      )
+    )
+
+    .map(
+      c =>
+
+      `
+      <option value="${c}">
+        ${CIV_ES[c] || c}
+      </option>
+      `
+
+    )
+
+    .join('');
+
+
+    if(
+      civs.Britons
+    ){
+
+      $('civ').value =
+      'Britons';
+
+    }
+
+
+    renderTechs();
+
+
+    await loadPictures(
+      $('civ').value
+    );
+
+
+    updateBonusPanel();
+
+    renderGroups();
+
+    calculate();
+
+
+    $('statusDot').className =
+    'dot ok';
+
+
+    $('statusText').textContent =
+    'Listo';
+
+
+  }catch(e){
+
+
+    console.error(e);
+
+
+    $('statusDot').className =
+    'dot bad';
+
+
+    $('statusText').textContent =
+    'Error';
+
+
+    $('groups').innerHTML =
+    `
+    <div class="error">
+      No se pudieron cargar los datos.
+      Recarga la página.
+    </div>
+    `;
+
+
+  }
+
+}
+
 
 
 load();
-
 
 </script>
 
