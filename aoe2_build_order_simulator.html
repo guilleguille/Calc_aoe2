@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AoE2 · Creador de Build Orders</title>
+<style>
+:root{color-scheme:dark;--bg:#0d1015;--p:#171b22;--p2:#202630;--b:#303846;--t:#f2f3f5;--m:#a9b0bc;--a:#d6a84b;--g:#61c48a;--r:#e66f6f;--bl:#72a7f0}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:14px system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select{font:inherit}button{border:1px solid var(--b);background:#272e39;color:#fff;padding:8px 11px;border-radius:8px;cursor:pointer}
+button:hover{background:#343d4b}button.primary{background:var(--a);color:#161108;font-weight:800;border:0}button.danger{background:#572929}
+input,select{background:#0f1319;color:#fff;border:1px solid var(--b);border-radius:7px;padding:7px;min-width:0}
+.wrap{max-width:1500px;margin:auto;padding:14px}.head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+h1{font-size:24px;margin:0 0 4px}.muted{color:var(--m)}.source{font-size:12px;margin-top:5px}.source.ok{color:var(--g)}.source.bad{color:#f2b46d}
+.stats{display:flex;gap:7px;flex-wrap:wrap}.stat{background:var(--p);border:1px solid var(--b);padding:8px 11px;border-radius:9px;min-width:92px}
+.stat small{display:block;color:var(--m)}.stat b{font-size:18px}.resources{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.res{background:var(--p);border:1px solid var(--b);border-radius:10px;padding:10px;text-align:center}.res b{font-size:20px;display:block}
+.grid{display:grid;grid-template-columns:1.05fr 1.05fr 1fr;gap:10px}@media(max-width:1050px){.grid{grid-template-columns:1fr 1fr}}@media(max-width:700px){.grid{grid-template-columns:1fr}.resources{grid-template-columns:1fr 1fr}}
+.panel{background:var(--p);border:1px solid var(--b);border-radius:12px;padding:12px;min-width:0}.panel h2{font-size:16px;margin:0 0 10px}.panel h3{font-size:13px;margin:14px 0 8px;color:#dfe3ea}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid #252b34}.row:last-child{border:0}.sub{font-size:12px;color:var(--m)}
+.controls{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.wide{width:100%}.mini{padding:5px 8px;font-size:12px}
+.task-idle{background:#3a2426;border-radius:7px;padding-left:6px!important;padding-right:6px!important}.bad{color:var(--r)}.good{color:var(--g)}
+.logbox{max-height:420px;overflow:auto}.log{padding:6px 8px;margin:5px 0;background:#11151b;border-left:3px solid var(--b);border-radius:0 6px 6px 0}.log.warn{border-color:#d99b43}.log.good{border-color:var(--g)}.log.bad{border-color:var(--r)}
+.tm{color:var(--a);font-weight:800;margin-right:6px}.card{background:#12171e;border:1px solid var(--b);border-radius:9px;padding:9px;margin-bottom:8px}
+.cardtop{display:flex;justify-content:space-between;gap:10px;align-items:center}.tag{font-size:11px;color:#d5dae2;background:#2a303a;border-radius:999px;padding:2px 7px}
+.pg{height:7px;background:#333b47;border-radius:99px;overflow:hidden;margin-top:7px}.pg>div{height:100%;background:var(--bl)}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.formgrid label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--m)}
+.full{grid-column:1/-1}.construction{border:1px solid var(--b);border-radius:8px;padding:8px;margin:7px 0;background:#12171e}
+.house-alert{display:none;background:#532b2b;border:1px solid #8b4545;border-radius:9px;padding:9px;margin-bottom:9px;font-weight:800}
+hr{border:0;border-top:1px solid var(--b);margin:12px 0}.small{font-size:12px}.pill{border-radius:999px;padding:3px 7px;background:#272e38;font-size:11px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div>
+      <h1>AoE2 · Creador de Build Orders</h1>
+      <div class="muted" id="age">Edad Oscura</div>
+      <div id="sourceStatus" class="source">Cargando datos de costes…</div>
+    </div>
+    <div class="stats">
+      <div class="stat"><small>Tiempo</small><b id="time">00:00</b></div>
+      <div class="stat"><small>Población</small><b id="pop">3 / 5</b></div>
+      <div class="stat"><small>Aldeanos</small><b id="vill">3</b></div>
+      <div class="stat"><small>Idle aldeanos</small><b id="vidle">00:00</b></div>
+      <div class="stat"><small>Idle TC</small><b id="tcidle">00:00</b></div>
+    </div>
+  </div>
+
+  <div class="resources">
+    <div class="res">🥩<b id="food">200</b><span class="muted">Comida</span></div>
+    <div class="res">🪵<b id="wood">200</b><span class="muted">Madera</span></div>
+    <div class="res">🪙<b id="gold">100</b><span class="muted">Oro</span></div>
+    <div class="res">🪨<b id="stone">200</b><span class="muted">Piedra</span></div>
+  </div>
+
+  <div class="grid">
+    <section class="panel">
+      <h2>👨‍🌾 Economía</h2>
+      <div id="houseAlert" class="house-alert">🏠 HOUSED · La producción está bloqueada por población.</div>
+      <div id="tasks"></div>
+      <hr>
+      <h3>Mover aldeanos</h3>
+      <div class="controls">
+        <select id="from"></select><span>→</span><select id="to"></select>
+        <input id="moveN" type="number" min="1" value="1" style="width:68px">
+        <button id="moveBtn">Mover</button>
+      </div>
+      <h3>Nuevos aldeanos</h3>
+      <div class="row"><span>Destino automático</span><select id="newDest"></select></div>
+      <hr>
+      <h3>Recursos finitos</h3>
+      <div class="formgrid">
+        <label>Ovejas<input id="sheepN" type="number" min="0" value="8"></label>
+        <label>Jabalíes<input id="boarN" type="number" min="0" value="2"></label>
+        <label>Ciervos<input id="deerN" type="number" min="0" value="3"></label>
+        <label>Arbustos de bayas<input id="berryN" type="number" min="0" value="6"></label>
+        <button class="full" id="applyMap">Aplicar recursos del mapa</button>
+      </div>
+      <div id="finite"></div>
+    </section>
+
+    <section class="panel">
+      <h2>🔨 Construcción</h2>
+      <div class="formgrid">
+        <label class="full">Edificio<select id="buildType"></select></label>
+        <label>Aldeanos constructores<input id="builders" type="number" min="1" value="1"></label>
+        <label>Al terminar vuelven a<select id="returnTask"></select></label>
+        <button class="full primary" id="buildBtn">Construir</button>
+      </div>
+      <div class="sub" style="margin-top:7px">Los constructores dejan de recolectar mientras trabajan. El coste se paga al empezar. Más constructores reducen el tiempo con una aproximación de la fórmula de construcción de AoE2.</div>
+      <hr>
+      <h3>Obras activas</h3>
+      <div id="works"></div>
+      <h3>Edificios terminados</h3>
+      <div id="built"></div>
+    </section>
+
+    <section class="panel">
+      <h2>🏭 Producción</h2>
+      <div id="prod"></div>
+      <hr>
+      <h3>Avance de edad</h3>
+      <div class="controls">
+        <button id="feudal">Feudal</button>
+        <button id="castle">Castillos</button>
+        <button id="imperial">Imperial</button>
+      </div>
+      <div id="ageProg"></div>
+    </section>
+
+    <section class="panel">
+      <h2>⏱ Simulación</h2>
+      <div class="controls">
+        <button id="play" class="primary">▶ Iniciar</button>
+        <button class="spd" data-s="1">1×</button>
+        <button class="spd" data-s="5">5×</button>
+        <button class="spd" data-s="20">20×</button>
+        <button class="spd" data-s="60">60×</button>
+        <button id="s1">+1 s</button>
+        <button id="s10">+10 s</button>
+        <button id="s60">+1 min</button>
+      </div>
+      <hr>
+      <div class="row"><span>🥩 / s</span><b id="rf">0</b></div>
+      <div class="row"><span>🪵 / s</span><b id="rw">0</b></div>
+      <div class="row"><span>🪙 / s</span><b id="rg">0</b></div>
+      <div class="row"><span>🪨 / s</span><b id="rs">0</b></div>
+      <div class="row"><span>Idle por housed</span><b id="housedIdle">00:00</b></div>
+      <hr>
+      <button class="danger" id="reset">Reiniciar</button>
+    </section>
+
+    <section class="panel">
+      <h2>📜 Línea temporal</h2>
+      <div id="logs" class="logbox"></div>
+    </section>
+
+    <section class="panel">
+      <h2>ℹ️ Qué modela esta versión</h2>
+      <div class="small muted">
+        Recursos finitos, idle al agotarse, casas, límite de población, housed, edificios con coste, aldeanos constructores, producción continua o por cantidad, bloqueo por recursos/edad/población y avance de edad.
+        <br><br>
+        Aún no simula distancias reales, drop-off, decay exacto, lure de jabalí, granjas con reseeding, tecnologías económicas ni bonos de civilización.
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+const DATA_URL="https://raw.githubusercontent.com/HSZemi/aoe2dat/master/data/units_buildings_techs.json";
+
+/* IDs del dataset. Se fijan IDs, NO costes. Los costes se leen del JSON remoto. */
+const ENTITY_IDS={
+  unit:{villager:83,militia:74,spearman:93,archer:4,skirmisher:7,scout:448,knight:38},
+  building:{house:70,barracks:12,archeryRange:87,stable:101,mill:68,lumberCamp:562,miningCamp:584,blacksmith:103,market:84}
+};
+
+/* Sólo reserva de emergencia si no hay red. */
+const FALLBACK_COSTS={
+  unit:{
+    villager:{food:50,wood:0,gold:0,stone:0},militia:{food:60,wood:0,gold:20,stone:0},
+    spearman:{food:35,wood:25,gold:0,stone:0},archer:{food:0,wood:25,gold:45,stone:0},
+    skirmisher:{food:25,wood:35,gold:0,stone:0},scout:{food:80,wood:0,gold:0,stone:0},knight:{food:60,wood:0,gold:75,stone:0}
+  },
+  building:{
+    house:{wood:25,food:0,gold:0,stone:0},barracks:{wood:175,food:0,gold:0,stone:0},
+    archeryRange:{wood:175,food:0,gold:0,stone:0},stable:{wood:175,food:0,gold:0,stone:0},
+    mill:{wood:100,food:0,gold:0,stone:0},lumberCamp:{wood:100,food:0,gold:0,stone:0},
+    miningCamp:{wood:100,food:0,gold:0,stone:0},blacksmith:{wood:150,food:0,gold:0,stone:0},market:{wood:175,food:0,gold:0,stone:0}
+  }
+};
+
+let COSTS=structuredClone(FALLBACK_COSTS);
+let sourceMode="fallback";
+
+const RATES={sheep:.33,boar:.41,deer:.41,berries:.31,farm:.32,wood:.39,gold:.38,stone:.36};
+const FOOD_PER={sheep:100,boar:340,deer:140,berries:125,farm:175};
+const TASKS={
+ idle:["💤","IDLE"],sheep:["🐑","Ovejas"],boar:["🐗","Jabalí"],deer:["🦌","Ciervos"],berries:["🫐","Bayas"],
+ farm:["🌾","Granjas"],wood:["🪵","Madera"],gold:["🪙","Oro"],stone:["🪨","Piedra"],building:["🔨","Construyendo"]
+};
+
+const BUILDINGS={
+ house:{name:"Casa",icon:"🏠",age:0,baseTime:25,pop:5,producer:false},
+ barracks:{name:"Cuartel",icon:"⚔️",age:0,baseTime:50,pop:0,producer:true},
+ archeryRange:{name:"Galería de tiro con arco",icon:"🏹",age:1,baseTime:50,pop:0,producer:true},
+ stable:{name:"Establo",icon:"🐴",age:1,baseTime:50,pop:0,producer:true},
+ mill:{name:"Molino",icon:"🌾",age:0,baseTime:35,pop:0,producer:false},
+ lumberCamp:{name:"Campamento maderero",icon:"🪵",age:0,baseTime:35,pop:0,producer:false},
+ miningCamp:{name:"Campamento minero",icon:"⛏️",age:0,baseTime:35,pop:0,producer:false},
+ blacksmith:{name:"Herrería",icon:"🔨",age:1,baseTime:40,pop:0,producer:false},
+ market:{name:"Mercado",icon:"⚖️",age:1,baseTime:60,pop:0,producer:false}
+};
+const UNITS={
+ villager:{name:"Aldeano",building:"townCenter",age:0,time:25,pop:1},
+ militia:{name:"Milicia",building:"barracks",age:0,time:21,pop:1},
+ spearman:{name:"Lancero",building:"barracks",age:1,time:22,pop:1},
+ archer:{name:"Arquero",building:"archeryRange",age:1,time:35,pop:1},
+ skirmisher:{name:"Hostigador",building:"archeryRange",age:1,time:22,pop:1},
+ scout:{name:"Explorador de caballería",building:"stable",age:1,time:30,pop:1},
+ knight:{name:"Caballero",building:"stable",age:2,time:30,pop:1}
+};
+const PROD_TYPES={
+ townCenter:{name:"Centro Urbano",icon:"🏛",units:["villager"]},
+ barracks:{name:"Cuartel",icon:"⚔️",units:["militia","spearman"]},
+ archeryRange:{name:"Galería de tiro con arco",icon:"🏹",units:["archer","skirmisher"]},
+ stable:{name:"Establo",icon:"🐴",units:["scout","knight"]}
+};
+const AGES=[
+ {name:"Edad Oscura",cost:null,time:0},
+ {name:"Edad Feudal",cost:{food:500,wood:0,gold:0,stone:0},time:130},
+ {name:"Edad de los Castillos",cost:{food:800,wood:0,gold:200,stone:0},time:160},
+ {name:"Edad Imperial",cost:{food:1000,wood:0,gold:800,stone:0},time:190}
+];
+
+function initState(){
+ const w={}; Object.keys(TASKS).forEach(k=>w[k]=0); w.sheep=3;
+ const production={};
+ for(const k of Object.keys(PROD_TYPES)) production[k]={unit:PROD_TYPES[k].units[0],mode:"off",target:1,left:0,slots:[],idle:0,housedIdle:0,produced:0};
+ const s={
+  time:0,age:0,res:{food:200,wood:200,gold:100,stone:200},villagers:3,military:0,popCap:5,workers:w,
+  finite:{sheep:800,boar:680,deer:420,berries:750,farm:0},finiteInitial:{sheep:800,boar:680,deer:420,berries:750,farm:0},
+  newDest:"sheep",works:[],built:{townCenter:1,house:0,barracks:0,archeryRange:0,stable:0,mill:0,lumberCamp:0,miningCamp:0,blacksmith:0,market:0},
+  production,ageUp:null,logs:[],villagerIdle:0,housedIdle:0
+ };
+ syncSlots(s); return s;
+}
+let S=initState(),running=false,speed=1,timer=null;
+
+function normCost(c){return {food:+c?.food||0,wood:+c?.wood||0,gold:+c?.gold||0,stone:+c?.stone||0}}
+async function loadCosts(){
+ const el=document.getElementById("sourceStatus");
+ try{
+   const r=await fetch(DATA_URL,{cache:"no-store"});
+   if(!r.ok) throw new Error("HTTP "+r.status);
+   const data=await r.json(), all=data.units_buildings||{};
+   for(const [k,id] of Object.entries(ENTITY_IDS.unit)){
+     if(all[id]?.cost) COSTS.unit[k]=normCost(all[id].cost);
+   }
+   for(const [k,id] of Object.entries(ENTITY_IDS.building)){
+     if(all[id]?.cost) COSTS.building[k]=normCost(all[id].cost);
+   }
+   sourceMode="remote";
+   el.textContent="✓ Costes cargados desde aoe2dat (datos extraídos del .dat)";
+   el.className="source ok";
+ }catch(e){
+   sourceMode="fallback";
+   el.textContent="⚠ No se pudo cargar el dataset remoto. Usando costes de reserva local.";
+   el.className="source bad";
+ }
+ renderBuildOptions(); renderProductionCards(); render();
+}
+
+function fmt(s){s=Math.max(0,Math.floor(s));return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function pop(){return S.villagers+S.military}
+function afford(c){return ["food","wood","gold","stone"].every(k=>S.res[k]>=c[k])}
+function spend(c){for(const k of ["food","wood","gold","stone"])S.res[k]-=c[k]}
+function costText(c){const x=[]; if(c.food)x.push(c.food+" 🥩");if(c.wood)x.push(c.wood+" 🪵");if(c.gold)x.push(c.gold+" 🪙");if(c.stone)x.push(c.stone+" 🪨");return x.join(" · ")||"Gratis"}
+function log(text,type=""){S.logs.unshift({time:S.time,text,type});S.logs=S.logs.slice(0,250)}
+function finiteTask(k){return ["sheep","boar","deer","berries","farm"].includes(k)}
+
+function syncSlots(st=S){
+ for(const [k,p] of Object.entries(st.production)){
+   const n=k==="townCenter"?1:(st.built[k]||0);
+   while(p.slots.length<n)p.slots.push({unit:null,progress:0});
+   while(p.slots.length>n)p.slots.pop();
+ }
+}
+
+function gatherFinite(k){
+ const n=S.workers[k]; if(!n)return 0;
+ if(S.finite[k]<=0){toIdleAll(k);return 0}
+ const g=Math.min(S.finite[k],RATES[k]*n);S.finite[k]-=g;S.res.food+=g;
+ if(S.finite[k]<=.0001){S.finite[k]=0;toIdleAll(k)} return g;
+}
+function toIdleAll(k){
+ const n=S.workers[k];if(!n)return;S.workers[k]=0;S.workers.idle+=n;
+ log(`${TASKS[k][0]} Se agotó ${TASKS[k][1]}. ${n} aldeano${n===1?"":"s"} pasan a IDLE.`,"warn");
+}
+function gather(){
+ ["sheep","boar","deer","berries","farm"].forEach(gatherFinite);
+ for(const k of ["wood","gold","stone"]){const g=S.workers[k]*RATES[k];S.res[k]+=g}
+}
+
+function constructionTime(base,n){
+ /* aproximación práctica: t = base*3/(n+2). 1 aldeano = base; rendimientos decrecientes. */
+ return base*3/(Math.max(1,n)+2);
+}
+function startBuild(){
+ const type=buildType.value,b=BUILDINGS[type],n=Math.max(1,+builders.value||1),ret=returnTask.value;
+ if(S.age<b.age){log(`No puedes construir ${b.name} todavía.`,"bad");render();return}
+ const c=COSTS.building[type];
+ if(!afford(c)){log(`Faltan recursos para ${b.name}: ${costText(c)}.`,"bad");render();return}
+ const available=S.villagers-S.workers.building;
+ if(available<n){log(`No hay ${n} aldeanos disponibles para construir.`,"bad");return}
+ /* Sacamos primero de la tarea de retorno si hay, luego del resto, evitando idle preferentemente */
+ let need=n;const taken={};
+ const order=[ret,"idle","wood","sheep","boar","deer","berries","gold","stone","farm"].filter((x,i,a)=>a.indexOf(x)===i&&x!=="building");
+ for(const k of order){const x=Math.min(need,S.workers[k]||0);if(x){S.workers[k]-=x;taken[k]=x;need-=x}if(!need)break}
+ if(need){for(const [k,v] of Object.entries(taken))S.workers[k]+=v;log("No se pudieron asignar constructores.","bad");return}
+ spend(c);S.workers.building+=n;
+ S.works.push({id:crypto.randomUUID?crypto.randomUUID():Math.random().toString(36),type,builders:n,progress:0,total:constructionTime(b.baseTime,n),returnTask:ret});
+ log(`${b.icon} ${n} aldeano${n===1?"":"s"} comienzan ${b.name} (${costText(c)}).`);
+ render();
+}
+function simWorks(){
+ for(let i=S.works.length-1;i>=0;i--){
+   const w=S.works[i];w.progress++;
+   if(w.progress>=w.total){
+     const b=BUILDINGS[w.type];S.built[w.type]=(S.built[w.type]||0)+1;
+     if(b.pop)S.popCap+=b.pop;
+     S.workers.building-=w.builders;
+     let dest=w.returnTask;
+     if(finiteTask(dest)&&S.finite[dest]<=0)dest="idle";
+     S.workers[dest]+=w.builders;
+     log(`${b.icon} ${b.name} terminada.${b.pop?` Población máxima: ${S.popCap}.`:""}`,"good");
+     S.works.splice(i,1);syncSlots();
+   }
+ }
+}
+
+function shouldProd(p){return p.mode==="continuous"||(p.mode==="amount"&&p.left>0)}
+function tryStartProd(key,p,slot){
+ const u=UNITS[p.unit];if(!u||S.age<u.age)return false;
+ if(pop()+u.pop>S.popCap){p.housedIdle++;S.housedIdle++;return "housed"}
+ const c=COSTS.unit[p.unit];if(!afford(c))return false;
+ spend(c);slot.unit=p.unit;slot.progress=0;if(p.mode==="amount")p.left--;
+ log(`${PROD_TYPES[key].icon} ${u.name} iniciado.`);return true;
+}
+function finishUnit(key,p,slot){
+ const uk=slot.unit,u=UNITS[uk];p.produced++;
+ if(uk==="villager"){S.villagers++;let d=S.newDest;if(finiteTask(d)&&S.finite[d]<=0)d="idle";S.workers[d]++;log(`👨‍🌾 Aldeano creado → ${TASKS[d][1]}.`,"good")}
+ else{S.military+=u.pop;log(`${u.name} terminado.`,"good")}
+ slot.unit=null;slot.progress=0;
+}
+function simProduction(){
+ syncSlots();
+ for(const [key,p] of Object.entries(S.production)){
+   for(const slot of p.slots){
+     if(key==="townCenter"&&S.ageUp){p.idle++;continue}
+     if(slot.unit){slot.progress++;if(slot.progress>=UNITS[slot.unit].time)finishUnit(key,p,slot);continue}
+     if(shouldProd(p)){const r=tryStartProd(key,p,slot);if(!r)p.idle++}
+   }
+ }
+}
+function startAge(target){
+ if(S.ageUp||target!==S.age+1)return;
+ const a=AGES[target];if(!afford(a.cost)){log(`Faltan recursos para ${a.name}.`,"bad");return}
+ spend(a.cost);S.ageUp={target,progress:0,total:a.time};log(`🏰 Avance a ${a.name} iniciado.`,"good");render();
+}
+function simAge(){
+ if(!S.ageUp)return;S.ageUp.progress++;
+ if(S.ageUp.progress>=S.ageUp.total){S.age=S.ageUp.target;log(`🏰 ${AGES[S.age].name} alcanzada.`,"good");S.ageUp=null}
+}
+function second(){
+ S.time++;gather();S.villagerIdle+=S.workers.idle;simWorks();simAge();simProduction();render();
+}
+function many(n){for(let i=0;i<n;i++)second()}
+
+function moveWorkers(){
+ const a=from.value,b=to.value,n=Math.max(1,+moveN.value||1);if(a===b)return;
+ const x=Math.min(n,S.workers[a]);if(!x)return;
+ if(finiteTask(b)&&S.finite[b]<=0){log(`${TASKS[b][1]} está agotado.`,"bad");return}
+ S.workers[a]-=x;S.workers[b]+=x;log(`👨‍🌾 ${x} aldeano${x===1?"":"s"}: ${TASKS[a][1]} → ${TASKS[b][1]}.`);render();
+}
+
+function applyMap(){
+ const vals={sheep:+sheepN.value||0,boar:+boarN.value||0,deer:+deerN.value||0,berries:+berryN.value||0};
+ for(const [k,n] of Object.entries(vals)){S.finite[k]=Math.max(0,n)*FOOD_PER[k];S.finiteInitial[k]=S.finite[k]}
+ log("Recursos del mapa actualizados.");render();
+}
+
+function startProd(key){
+ const p=S.production[key];
+ p.unit=document.querySelector(`[data-unit="${key}"]`).value;
+ p.mode=document.querySelector(`[data-mode="${key}"]`).value;
+ p.target=Math.max(1,+document.querySelector(`[data-amount="${key}"]`).value||1);
+ p.left=p.mode==="amount"?p.target:0;log(`${PROD_TYPES[key].name}: ${p.mode==="continuous"?"producción continua":p.mode==="amount"?p.target+" × "+UNITS[p.unit].name:"parado"}.`);render();
+}
+
+function renderBuildOptions(){
+ buildType.innerHTML=Object.entries(BUILDINGS).filter(([,b])=>S.age>=b.age).map(([k,b])=>`<option value="${k}">${b.icon} ${b.name} — ${costText(COSTS.building[k])}</option>`).join("");
+}
+function renderTaskSelects(){
+ const opts=Object.entries(TASKS).filter(([k])=>k!=="building").map(([k,v])=>`<option value="${k}">${v[0]} ${v[1]}</option>`).join("");
+ for(const el of [from,to,newDest,returnTask])el.innerHTML=opts;
+ from.value="sheep";to.value="wood";newDest.value=S.newDest;returnTask.value="wood";
+}
+function renderProductionCards(){
+ prod.innerHTML=Object.entries(PROD_TYPES).map(([k,b])=>{
+  const opts=b.units.map(u=>`<option value="${u}">${UNITS[u].name} — ${costText(COSTS.unit[u])}</option>`).join("");
+  return `<div class="card"><div class="cardtop"><b>${b.icon} ${b.name}</b><span class="tag" id="tag-${k}"></span></div>
+   <div class="formgrid" style="margin-top:7px"><label>Unidad<select data-unit="${k}">${opts}</select></label>
+   <label>Modo<select data-mode="${k}"><option value="off">Desactivado</option><option value="continuous">Continuo</option><option value="amount">Cantidad</option></select></label>
+   <label>Cantidad<input data-amount="${k}" type="number" min="1" value="1"></label>
+   <div class="controls" style="align-self:end"><button class="mini" data-start="${k}">Aplicar</button><button class="mini" data-stop="${k}">Detener</button></div>
+   <div class="full sub" id="detail-${k}"></div><div class="full pg"><div id="pg-${k}"></div></div></div></div>`;
+ }).join("");
+ document.querySelectorAll("[data-start]").forEach(x=>x.onclick=()=>startProd(x.dataset.start));
+ document.querySelectorAll("[data-stop]").forEach(x=>x.onclick=()=>{S.production[x.dataset.stop].mode="off";render()});
+}
+function render(){
+ time.textContent=fmt(S.time);food.textContent=Math.floor(S.res.food);wood.textContent=Math.floor(S.res.wood);gold.textContent=Math.floor(S.res.gold);stone.textContent=Math.floor(S.res.stone);
+ age.textContent=AGES[S.age].name;pop.textContent=`${pop()} / ${S.popCap}`;vill.textContent=S.villagers;vidle.textContent=fmt(S.villagerIdle);tcidle.textContent=fmt(S.production.townCenter.idle);housedIdle.textContent=fmt(S.housedIdle);
+ houseAlert.style.display=pop()>=S.popCap?"block":"none";
+ tasks.innerHTML=Object.entries(TASKS).map(([k,v])=>`<div class="row ${k==="idle"&&S.workers[k]?"task-idle":""}"><div><b>${v[0]} ${v[1]}</b>${finiteTask(k)?`<div class="sub">${Math.floor(S.finite[k])} comida restante</div>`:""}</div><b class="${k==="idle"&&S.workers[k]?"bad":""}">${S.workers[k]}</b></div>`).join("");
+ finite.innerHTML=["sheep","boar","deer","berries"].map(k=>{const p=S.finiteInitial[k]?Math.max(0,100*S.finite[k]/S.finiteInitial[k]):0;return `<div class="row"><div style="width:100%"><div class="cardtop"><span>${TASKS[k][0]} ${TASKS[k][1]}</span><span>${Math.floor(S.finite[k])}</span></div><div class="pg"><div style="width:${p}%"></div></div></div></div>`}).join("");
+ works.innerHTML=S.works.length?S.works.map(w=>`<div class="construction"><div class="cardtop"><b>${BUILDINGS[w.type].icon} ${BUILDINGS[w.type].name}</b><span>${w.builders} 👨‍🌾</span></div><div class="sub">${Math.ceil(w.total-w.progress)} s restantes</div><div class="pg"><div style="width:${Math.min(100,w.progress/w.total*100)}%"></div></div></div>`).join(""):`<div class="muted small">Sin obras activas.</div>`;
+ built.innerHTML=Object.entries(S.built).filter(([k,n])=>k!=="townCenter"&&n).map(([k,n])=>`<div class="row"><span>${BUILDINGS[k].icon} ${BUILDINGS[k].name}</span><b>${n}</b></div>`).join("")||`<div class="muted small">Todavía no has construido edificios.</div>`;
+ for(const [k,p] of Object.entries(S.production)){const tag=document.getElementById("tag-"+k),det=document.getElementById("detail-"+k),pg=document.getElementById("pg-"+k);if(!tag)continue;
+   const n=k==="townCenter"?1:(S.built[k]||0);tag.textContent=`${n}× · ${p.mode==="off"?"Parado":p.mode==="continuous"?"Continuo":p.left+" pendientes"}`;
+   det.textContent=`Producidos: ${p.produced} · idle: ${fmt(p.idle)} · housed: ${fmt(p.housedIdle)}`;
+   const active=p.slots.find(s=>s.unit);pg.style.width=active?Math.min(100,active.progress/UNITS[active.unit].time*100)+"%":"0%";
+ }
+ const rates={food:["sheep","boar","deer","berries","farm"].reduce((a,k)=>a+S.workers[k]*RATES[k],0),wood:S.workers.wood*RATES.wood,gold:S.workers.gold*RATES.gold,stone:S.workers.stone*RATES.stone};
+ rf.textContent=rates.food.toFixed(2);rw.textContent=rates.wood.toFixed(2);rg.textContent=rates.gold.toFixed(2);rs.textContent=rates.stone.toFixed(2);
+ logs.innerHTML=S.logs.map(l=>`<div class="log ${l.type}"><span class="tm">${fmt(l.time)}</span>${l.text}</div>`).join("");
+ feudal.disabled=S.age!==0||!!S.ageUp;castle.disabled=S.age!==1||!!S.ageUp;imperial.disabled=S.age!==2||!!S.ageUp;
+ ageProg.innerHTML=S.ageUp?`<div class="sub" style="margin-top:8px">${AGES[S.ageUp.target].name}: ${Math.ceil(S.ageUp.total-S.ageUp.progress)} s</div><div class="pg"><div style="width:${S.ageUp.progress/S.ageUp.total*100}%"></div></div>`:"";
+ renderBuildOptions();
+}
+
+play.onclick=()=>{running=!running;play.textContent=running?"⏸ Pausar":"▶ Iniciar";if(timer)clearInterval(timer);timer=running?setInterval(()=>many(speed),1000):null};
+document.querySelectorAll(".spd").forEach(b=>b.onclick=()=>speed=+b.dataset.s);
+s1.onclick=()=>many(1);s10.onclick=()=>many(10);s60.onclick=()=>many(60);
+moveBtn.onclick=moveWorkers;newDest.onchange=()=>{S.newDest=newDest.value};applyMap.onclick=applyMap;buildBtn.onclick=startBuild;
+feudal.onclick=()=>startAge(1);castle.onclick=()=>startAge(2);imperial.onclick=()=>startAge(3);
+reset.onclick=()=>{if(timer)clearInterval(timer);running=false;timer=null;play.textContent="▶ Iniciar";S=initState();renderTaskSelects();renderProductionCards();log("Simulación reiniciada.");render()};
+
+renderTaskSelects();renderProductionCards();log("Simulación iniciada. 3 aldeanos en ovejas.");render();loadCosts();
+</script>
+</body>
+</html>
